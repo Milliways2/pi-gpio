@@ -1,0 +1,12 @@
+How to install pi-gpio
+=======================
+
+The easiest way is to use the supplied 'build' script:
+
+	./build
+
+Alternatively  use the supplied Makefile or  'build' script in the source directory:
+
+	sudo make install
+
+That should do a complete install of pi-gpio

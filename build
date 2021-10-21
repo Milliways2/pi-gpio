@@ -1,0 +1,5 @@
+#!/bin/sh
+cd source
+make clean
+sudo make install
+cd ..
