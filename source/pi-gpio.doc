@@ -1,5 +1,0 @@
-Despite enhancing RPi.GPIO to meet my immediate needs for Python code, I still would like a dynamic C library to control GPIO.
-Building one from scratch is a daunting task, but while working on RPi.GPIO I realised that this already has the necessary C code to perform basic GPIO functions which only required minor modification.
-It was a comparatively simple task to turn this into a library (with equivalent functionality to RPi.GPIO).
-Documenting the library (an essential) and testing is taking longer!
-Even though the code to perform equivalent functionality is present only basic I/O has been completed.
