@@ -24,6 +24,7 @@ SOFTWARE.
  * https://www.raspberrypi.org/documentation/hardware/raspberrypi/revision-codes/README.md (obsolete 2021-08-09)
  * https://www.raspberrypi.org/documentation/computers/raspberry-pi.html#raspberry-pi-revision-codes
  */
+// 2021-10-30 Zero 2 W
 
 #include <stdio.h>
 #include <stdint.h>
@@ -55,6 +56,7 @@ int get_rpi_info(rpi_info *info)
          sscanf(buffer, "Hardware	: %s", hardware);
          if (strcmp(hardware, "BCM2708") == 0 ||
              strcmp(hardware, "BCM2709") == 0 ||
+             strcmp(hardware, "BCM2711") == 0 ||
              strcmp(hardware, "BCM2835") == 0 ||
              strcmp(hardware, "BCM2836") == 0 ||
              strcmp(hardware, "BCM2837") == 0 ) {
@@ -99,9 +101,10 @@ int get_rpi_info(rpi_info *info)
             switch (revision[len-2]) {
                case '0': info->type = "Compute Module 3+"; info->p1_revision = 0; break;
                case '1': info->type = "Pi 4 Model B"; info->p1_revision = 3; break;
+               case '2': info->type = "Zero 2 W"; info->p1_revision = 3; break;
                case '3': info->type = "Pi 400"; info->p1_revision = 3; break;
                case '4': info->type = "Compute Module 4"; info->p1_revision = 3; break;
-							 default : info->type = "Unknown"; info->p1_revision = 3; break;
+               default : info->type = "Unknown"; info->p1_revision = 3; break;
             } break;
          default: info->type = "Unknown"; info->p1_revision = 3; break;
       }
@@ -139,8 +142,8 @@ int get_rpi_info(rpi_info *info)
       info->type = "Unknown";
       strcpy(info->revision, revision);
 
-      uint64_t rev;
-      sscanf(revision, "%llx", &rev);
+      uint32_t rev;
+      sscanf(revision, "%x", &rev);
       rev = rev & 0xefffffff;       // ignore preceeding 1000 for overvolt
 
       if (rev == 0x0002 || rev == 0x0003) {
