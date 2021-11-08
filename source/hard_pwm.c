@@ -2,7 +2,7 @@
 This is a Hardware PWM module
 Based on WiringPi code
 
-2021-10-04
+2021-11-08
 */
 
 /*
@@ -142,7 +142,6 @@ int pwmWrite(int pin, int value) {
 
 // Put gpio pin into PWM mode
 int pwmSetGpio(int gpio) {
-  setupMemCheck();
   int new_mode = (gpioToPwmPort[gpio] & 0xf0) >> 4;
   if (new_mode) {
     int offset = (gpio / 10);
