@@ -26,6 +26,8 @@ void setup_gpio(int gpio, int direction, int pud);
 int gpio_function(int gpio);
 void output_gpio(int gpio, int value);
 int input_gpio(int gpio);
+int input_28(void);
+void output_28(unsigned bits, unsigned mask);
 int get_pullupdn(int gpio);
 
 void set_rising_event(int gpio, int enable);

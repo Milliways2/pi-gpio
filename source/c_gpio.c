@@ -22,55 +22,55 @@ SOFTWARE.
 /*
 Enhanced functionality by Ian Binnie (based on RPi.GPIO 0.7.0 by Ben Croston)
 Includes code inspired by pigpio & wiringpi
-2021-10-19
+2022-08-16
 */
 
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <fcntl.h>
-#include <sys/mman.h>
-#include <string.h>
 #include "c_gpio.h"
 #include "cpuinfo.h"
+#include <fcntl.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/mman.h>
 
-#define BCM2708_PERI_BASE_DEFAULT   0x20000000
-#define BCM2709_PERI_BASE_DEFAULT   0x3f000000
-#define BCM2710_PERI_BASE_DEFAULT   0x3f000000
-#define BCM2711_PERI_BASE_DEFAULT   0xfe000000
+#define BCM2708_PERI_BASE_DEFAULT 0x20000000
+#define BCM2709_PERI_BASE_DEFAULT 0x3f000000
+#define BCM2710_PERI_BASE_DEFAULT 0x3f000000
+#define BCM2711_PERI_BASE_DEFAULT 0xfe000000
 
-#define PADS_BASE_OFFSET            0x100000
-#define GPIO_BASE_OFFSET            0x200000
-#define CLOCK_BASE_OFFSET           0x101000
-#define TIMER_OFFSET                0x00B000
-#define PWM_OFFSET                  0x20C000
+#define PADS_BASE_OFFSET 0x100000
+#define GPIO_BASE_OFFSET 0x200000
+#define CLOCK_BASE_OFFSET 0x101000
+#define TIMER_OFFSET 0x00B000
+#define PWM_OFFSET 0x20C000
 
-#define FSEL_OFFSET                 0   // 0x0000
-#define SET_OFFSET                  7   // 0x001c / 4
-#define CLR_OFFSET                  10  // 0x0028 / 4
-#define PINLEVEL_OFFSET             13  // 0x0034 / 4
-#define EVENT_DETECT_OFFSET         16  // 0x0040 / 4
-#define RISING_ED_OFFSET            19  // 0x004c / 4
-#define FALLING_ED_OFFSET           22  // 0x0058 / 4
-#define HIGH_DETECT_OFFSET          25  // 0x0064 / 4
-#define LOW_DETECT_OFFSET           28  // 0x0070 / 4
-#define PULLUPDN_OFFSET             37  // 0x0094 / 4
-#define PULLUPDNCLK_OFFSET          38  // 0x0098 / 4
+#define FSEL_OFFSET 0          // 0x0000
+#define SET_OFFSET 7           // 0x001c / 4
+#define CLR_OFFSET 10          // 0x0028 / 4
+#define PINLEVEL_OFFSET 13     // 0x0034 / 4
+#define EVENT_DETECT_OFFSET 16 // 0x0040 / 4
+#define RISING_ED_OFFSET 19    // 0x004c / 4
+#define FALLING_ED_OFFSET 22   // 0x0058 / 4
+#define HIGH_DETECT_OFFSET 25  // 0x0064 / 4
+#define LOW_DETECT_OFFSET 28   // 0x0070 / 4
+#define PULLUPDN_OFFSET 37     // 0x0094 / 4
+#define PULLUPDNCLK_OFFSET 38  // 0x0098 / 4
 
-#define PULLUPDN_OFFSET_2711_0      57
-#define PULLUPDN_OFFSET_2711_1      58
-#define PULLUPDN_OFFSET_2711_2      59
-#define PULLUPDN_OFFSET_2711_3      60
+#define PULLUPDN_OFFSET_2711_0 57
+#define PULLUPDN_OFFSET_2711_1 58
+#define PULLUPDN_OFFSET_2711_2 59
+#define PULLUPDN_OFFSET_2711_3 60
 
-#define PAGE_SIZE  (4*1024)
-#define BLOCK_SIZE (4*1024)
-#define PADS_LEN  0x38	// from pigpiod.c
-#define PWM_LEN 0x28 // from pigpiod.c
-#define CLK_LEN 0xA8 // from pigpiod.c
+#define PAGE_SIZE (4 * 1024)
+#define BLOCK_SIZE (4 * 1024)
+#define PADS_LEN 0x38 // from pigpiod.c
+#define PWM_LEN 0x28  // from pigpiod.c
+#define CLK_LEN 0xA8  // from pigpiod.c
 
 volatile uint32_t *gpio_map;
-int piSetup    = 0 ;
-int piMemSetup = 0 ;
+int piSetup = 0;
+int piMemSetup = 0;
 
 static volatile unsigned int pads_base;
 static volatile unsigned int pwm_base;
@@ -98,9 +98,11 @@ void short_wait(void) {
 	/dev/gpiomem allows GPIO access without root to members of the gpio group.
 	This does not provide access the PWM or clock hardware registers.
 
-	The alternative is to use /dev/mem which requires root and determining the address of the GPIO peripheral which varies depending on SoC.
+	The alternative is to use /dev/mem which requires root and determining
+	the address of the GPIO peripheral which varies depending on SoC.
 
-	This function will use /dev/mem if invoked with root privileges and try /dev/gpiomem if not.
+	This function will use /dev/mem if invoked with root privileges and try
+	/dev/gpiomem if not.
 */
 
 int map_gpio_mem(int mem_fd, uint32_t gpio_base) {
@@ -120,6 +122,8 @@ int map_gpio_mem(int mem_fd, uint32_t gpio_base) {
 }
 
 int setup(void) {
+  // Initialise pi-gpio
+  // Must be called before any other function except get_rpi_info.
   int mem_fd;
   int map_result;
   uint32_t peri_base = 0;
@@ -131,7 +135,7 @@ int setup(void) {
 
   if ((mem_fd = open("/dev/mem", O_RDWR | O_SYNC | O_CLOEXEC)) < 0) {
     if ((mem_fd = open("/dev/gpiomem", O_RDWR | O_SYNC | O_CLOEXEC)) > 0)
-		 return map_gpio_mem(mem_fd, 0);
+      return map_gpio_mem(mem_fd, 0);
   }
 
   // Use board revision already detected
@@ -274,47 +278,59 @@ void setupMemCheck(void) {
   exit(SETUP_NOT_RPI_FAIL);
 }
 
-static void set_pullupdn(int gpio, int pud)
-{
-    // Check GPIO register
-    int is2711 = *(gpio_map+PULLUPDN_OFFSET_2711_3) != 0x6770696f;
-    if (is2711) {
-        // Pi 4 Pull-up/down method
-        int pullreg = PULLUPDN_OFFSET_2711_0 + (gpio >> 4);
-        int pullshift = (gpio & 0xf) << 1;
-        unsigned int pullbits;
-        unsigned int pull = 0;
-        switch (pud) {
-            case PUD_OFF:  pull = 0; break;
-            case PUD_UP:   pull = 1; break;
-            case PUD_DOWN: pull = 2; break;
-            default:       pull = 0; // switch PUD to OFF for other values
-        }
-        pullbits = *(gpio_map + pullreg);
-        pullbits &= ~(3 << pullshift);
-        pullbits |= (pull << pullshift);
-        *(gpio_map + pullreg) = pullbits;
-    } else {
-        // Legacy Pull-up/down method
-        int clk_offset = PULLUPDNCLK_OFFSET + (gpio/32);
-        int shift = (gpio%32);
-
-        if (pud == PUD_DOWN) {
-            *(gpio_map+PULLUPDN_OFFSET) = (*(gpio_map+PULLUPDN_OFFSET) & ~3) | PUD_DOWN;
-        } else if (pud == PUD_UP) {
-            *(gpio_map+PULLUPDN_OFFSET) = (*(gpio_map+PULLUPDN_OFFSET) & ~3) | PUD_UP;
-        } else  { // pud == PUD_OFF
-            *(gpio_map+PULLUPDN_OFFSET) &= ~3;
-        }
-        short_wait();
-        *(gpio_map+clk_offset) = 1 << shift;
-        short_wait();
-        *(gpio_map+PULLUPDN_OFFSET) &= ~3;
-        *(gpio_map+clk_offset) = 0;
+static void set_pullupdn(int gpio, int pud) {
+  // Check GPIO register
+  int is2711 = *(gpio_map + PULLUPDN_OFFSET_2711_3) != 0x6770696f;
+  if (is2711) {
+    // Pi 4 Pull-up/down method
+    int pullreg = PULLUPDN_OFFSET_2711_0 + (gpio >> 4);
+    int pullshift = (gpio & 0xf) << 1;
+    unsigned int pullbits;
+    unsigned int pull = 0;
+    switch (pud) {
+    case PUD_OFF:
+      pull = 0;
+      break;
+    case PUD_UP:
+      pull = 1;
+      break;
+    case PUD_DOWN:
+      pull = 2;
+      break;
+    default:
+      pull = 0; // switch PUD to OFF for other values
     }
+    pullbits = *(gpio_map + pullreg);
+    pullbits &= ~(3 << pullshift);
+    pullbits |= (pull << pullshift);
+    *(gpio_map + pullreg) = pullbits;
+  } else {
+    // Legacy Pull-up/down method
+    int clk_offset = PULLUPDNCLK_OFFSET + (gpio / 32);
+    int shift = (gpio % 32);
+
+    if (pud == PUD_DOWN) {
+      *(gpio_map + PULLUPDN_OFFSET) =
+          (*(gpio_map + PULLUPDN_OFFSET) & ~3) | PUD_DOWN;
+    } else if (pud == PUD_UP) {
+      *(gpio_map + PULLUPDN_OFFSET) =
+          (*(gpio_map + PULLUPDN_OFFSET) & ~3) | PUD_UP;
+    } else { // pud == PUD_OFF
+      *(gpio_map + PULLUPDN_OFFSET) &= ~3;
+    }
+    short_wait();
+    *(gpio_map + clk_offset) = 1 << shift;
+    short_wait();
+    *(gpio_map + PULLUPDN_OFFSET) &= ~3;
+    *(gpio_map + clk_offset) = 0;
+  }
 }
 
 int get_pullupdn(int gpio) {
+  //        Return the current GPIO pull
+  //        0:None/Unknown
+  //        1:Up Pi4 only
+  //        2:Down Pi4 only
   setupCheck();
   // Check GPIO register
   int is2711 = *(gpio_map + PULLUPDN_OFFSET_2711_3) != 0x6770696f;
@@ -333,6 +349,9 @@ int get_pullupdn(int gpio) {
 }
 
 void setup_gpio(int gpio, int direction, int pud) {
+  // Set gpio as an input or an output
+  //        direction: 0=IN, 1=OUT
+  //        pud: 0=None 1=Up 2=Down
   setupCheck();
   int offset = FSEL_OFFSET + (gpio / 10);
   int shift = (gpio % 10) * 3;
@@ -345,6 +364,8 @@ void setup_gpio(int gpio, int direction, int pud) {
 }
 
 int gpio_function(int gpio) {
+  //        Returns the current GPIO mode
+  //        Returns 0-7 (IN, OUT, ALT5, ALT4, ALT0, ALT1, ALT2, ALT3)
   setupCheck();
   int offset = FSEL_OFFSET + (gpio / 10);
   int shift = (gpio % 10) * 3;
@@ -355,6 +376,8 @@ int gpio_function(int gpio) {
 }
 
 void output_gpio(int gpio, int value) {
+  //        Output to a GPIO channel
+  //        value - 0/1 or False/True or LOW/HIGH
   int offset, shift;
 
   setupCheck();
@@ -369,6 +392,8 @@ void output_gpio(int gpio, int value) {
 }
 
 int input_gpio(int gpio) {
+  //        Returns the GPIO level.
+  //        Returns HIGH=1=True or LOW=0=False
   unsigned int offset, value, mask;
 
   setupCheck();
@@ -377,6 +402,22 @@ int input_gpio(int gpio) {
   value = *(gpio_map + offset) & mask;
   return value ? 1 : 0;
 }
+
+int input_28(void) {
+  //        Returns value of GPIO 0-27
+  setupCheck();
+  return *(gpio_map + PINLEVEL_OFFSET) & 0x0FFFFFFF;
+}
+
+void output_28(unsigned bits, unsigned mask) {
+  //        Sets value of GPIO 0-27
+  //        bits: 28 bit values to set; each bit 0/1
+  //        mask: 28 bit mask specifying GPIO to set
+  setupCheck();
+  *(gpio_map + SET_OFFSET) = bits & mask;
+  *(gpio_map + CLR_OFFSET) = ~bits & mask;
+}
+
 // -----------------------------
 
 int getPAD(unsigned group) {

@@ -32,6 +32,8 @@ int gpio_function(int gpio);
 void output_gpio(int gpio, int value);
 int input_gpio(int gpio);
 int get_pullupdn(int gpio);
+int input_28(void);
+void output_28(unsigned bits, unsigned mask);
 void set_rising_event(int gpio, int enable);
 void set_falling_event(int gpio, int enable);
 void set_high_event(int gpio, int enable);
@@ -93,28 +95,59 @@ unsigned int millis (void);
 
 // soft_pwm.h
 /* Software PWM using threads */
-
+#ifndef PiSOFT_PWM_PWM_H
+#define PiSOFT_PWM_PWM_H
 void pwm_set_duty_cycle(unsigned int gpio, float dutycycle);
 void pwm_set_frequency(unsigned int gpio, float freq);
 void pwm_start(unsigned int gpio);
 void pwm_stop(unsigned int gpio);
 int pwm_exists(unsigned int gpio);
+#endif /* PiSOFT_PWM_PWM_H */
 
 // hard_pwm.h
 // Hardware PWM
-
+#ifndef PiHARD_PWM_H
+#define PiHARD_PWM_H
 int pwmSetGpio(int gpio);
 void pwmSetMode(int mode);
 int pwmSetRange(int gpio, unsigned int range);
 int pwmWrite(int gpio, int value);
 void pwmSetClock(int divisor);
 
+#define	PWM_MODE_MS		0
+#define	PWM_MODE_BAL	1
+#endif /* PiHARD_PWM_H */
+
+// I2C
+#ifndef PiI2C_H
+#define PiI2C_H
+
+int i2cOpen(unsigned i2cBus, unsigned i2cAddr) ;
+
+int i2cRead			(unsigned handle) ;
+int i2cRead8		(unsigned handle, unsigned i2cReg) ;
+int i2cRead16     (unsigned handle, unsigned i2cReg) ;
+
+int i2cWrite		(unsigned handle, int data) ;
+int i2cWrite8    (unsigned handle, unsigned i2cReg, int data) ;
+int i2cWrite16    (unsigned handle, unsigned i2cReg, int data) ;
+#endif /* PiI2C_H */
+
+// SPI
+#ifndef PiSPI_H
+#define PiSPI_H
+int spiOpen(unsigned controller, unsigned channel, unsigned speed, unsigned mode);
+int spiDataRW2(int channel, unsigned char *tx_data, unsigned char *rx_data, int len);
+int spiDataRW (int channel, unsigned char *data, int len);
+#endif /* PiSPI_H */
+
 // PAD
+#ifndef PiPAD_H
+#define PiPAD_H
 int getPAD(unsigned group);
 void setPAD(unsigned group, unsigned padstate);
+#endif /* PiPAD_H */
 
-#define	PWM_MODE_MS	0
-#define	PWM_MODE_BAL	1
 
 #ifdef __cplusplus
 }

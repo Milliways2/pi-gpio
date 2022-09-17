@@ -1,0 +1,28 @@
+These programs are designed to test/demonstrate the pi-gpio library
+
+	getInfoTest.c	displays Raspberry Pi Information
+
+GPIO programs
+	bench-pi-gpio.c
+	get28.c
+	getGPIO.c
+	set28.c
+	setGPIO.c
+	pwmTest.c
+
+GPIO programs - require sudo
+	getPAD.c
+	hwPWMtest.c
+
+I²C - require configuration and extra hardware
+	ADXL345.c	ADXL345 accelerometer
+	DS3231.c	DS3231 RTC
+	egpio.c		GPIO for MCP23017 16-Bit I/O Expander
+	bench-egpio.c
+
+SPI - require configuration and extra hardware
+	spidev_test.c	SPI testing utility (using spidev driver)
+	awrite.c	MCP4802 DAC
+	aread.c		MCP3002 ADC
+
+Few of these do anything "useful" - use to build your application.
