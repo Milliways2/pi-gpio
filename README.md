@@ -6,12 +6,12 @@ This library has code to:-
 
 Read Raspberry Pi Information
 
-Perform basic GPIO functions
-	• Set gpio as input or output
-	• Read/Write gpio
-	• Set pullup/down of gpio
-	• Read the current gpio mode
-	• Read gpio pull/up down (Pi4/BCM2711 only)
+Perform basic GPIO functions  
+	• Set gpio as input or output  
+	• Read/Write gpio  
+	• Set pullup/down of gpio  
+	• Read the current gpio mode  
+	• Read gpio pull/up down (Pi4/BCM2711 only)  
 
 Software PWM on all pins
 
@@ -38,7 +38,7 @@ Dependencies
 
 Most code uses direct hardware access to the SoC Peripheral and is independent of the kernel.
 
-	• Raspberry Pi Information is determined from a register on the SoC, which is available from device-tree.
+	• Raspberry Pi Information is determined from a register on the SoC, which is available from device-tree.  
 	• I²C & SPI use kernel drivers.
 
 If run without root permision pi-gpio uses character device /dev/gpiomem to map the GPIO register page.

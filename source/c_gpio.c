@@ -23,6 +23,7 @@ SOFTWARE.
 Enhanced functionality by Ian Binnie (based on RPi.GPIO 0.7.0 by Ben Croston)
 Includes code inspired by pigpio & wiringpi
 2022-08-16
+2022-11-19	Fix setup_gpio direction
 */
 
 #include "c_gpio.h"
@@ -356,11 +357,22 @@ void setup_gpio(int gpio, int direction, int pud) {
   int offset = FSEL_OFFSET + (gpio / 10);
   int shift = (gpio % 10) * 3;
   set_pullupdn(gpio, pud);
-  if (direction == OUTPUT)
+  //   if (direction == OUTPUT)
+  //     *(gpio_map + offset) =
+  //         (*(gpio_map + offset) & ~(7 << shift)) | (1 << shift);
+  //   else // direction == INPUT
+  //     *(gpio_map + offset) = (*(gpio_map + offset) & ~(7 << shift));
+  if (direction) { //  OUTPUT
+    //     *(gpio_map + offset) = (*(gpio_map + offset) & ~(7 << shift));
+//     printf("Set GPIO%d OUTPUT\n", gpio);
     *(gpio_map + offset) =
         (*(gpio_map + offset) & ~(7 << shift)) | (1 << shift);
-  else // direction == INPUT
+  } else { // INPUT
+    //     *(gpio_map + offset) = (*(gpio_map + offset) & ~(7 << shift)) | (1 <<
+    //     shift);
+//     printf("Set GPIO%d INPUT\n", gpio);
     *(gpio_map + offset) = (*(gpio_map + offset) & ~(7 << shift));
+  }
 }
 
 int gpio_function(int gpio) {

@@ -43,9 +43,9 @@ int eventdetected(int gpio);
 // #define SETUP_CPUINFO_FAIL 4
 #define SETUP_NOT_RPI_FAIL 5
 
-#define INPUT  1 // is really 0 for control register!
-#define OUTPUT 0 // is really 1 for control register!
-#define ALT0   4
+// 2022-11-19	Fix setup_gpio direction
+#define INPUT  0
+#define OUTPUT 1
 
 #define HIGH 1
 #define LOW  0

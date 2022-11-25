@@ -249,6 +249,25 @@ int get_rpi_info(rpi_info *info)
    return 0;
 }
 
+// Return rpi_info as a python compatible dictionary string
+// This is easier than trying to read rpi_info in python!
+char *get_rpi_dict() {
+  rpi_info info;
+  char dict_info[1024];
+
+  get_rpi_info(&info);
+  sprintf(dict_info,
+          "{'p1_revision':%d, 'type':'%s', 'ram':'%s', 'processor':'%s', "
+          "'manufacturer':'%s', 'revision':'%.32s'}",
+          info.p1_revision, info.type, info.ram, info.processor,
+          info.manufacturer, info.revision);
+  return strdup(dict_info);
+}
+
+void free_memory(char* ptr) {
+    free(ptr);
+}
+
 /*
 
 32 bits
