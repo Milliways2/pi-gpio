@@ -13,3 +13,5 @@ typedef struct
 #endif /* CPUINFO_H */
 
 int get_rpi_info(rpi_info *info);
+
+unsigned get_revision(void);

@@ -25,6 +25,7 @@ SOFTWARE.
  * https://www.raspberrypi.org/documentation/computers/raspberry-pi.html#raspberry-pi-revision-codes
  */
 // 2021-10-30 Zero 2 W
+// 2022-11-29 BCM2711
 
 #include <stdio.h>
 #include <stdint.h>
@@ -32,6 +33,20 @@ SOFTWARE.
 #include <string.h>
 #include <arpa/inet.h>
 #include "cpuinfo.h"
+
+unsigned get_revision(void) {
+  FILE *fp;
+  uint32_t n = 0;
+
+  if ((fp = fopen("/proc/device-tree/system/linux,revision", "r"))) {
+    if (fread(&n, sizeof(n), 1, fp) != 1) {
+      fclose(fp);
+      return 0;
+    }
+  }
+  fclose(fp);
+  return ntohl(n);
+}
 
 int get_rpi_info(rpi_info *info)
 {
@@ -286,7 +301,7 @@ SRRR MMMM PPPP TTTT TTTT VVVV
 S scheme (0=old, 1=new)
 R RAM (0=256, 1=512, 2=1024)
 M manufacturer (0='SONY',1='EGOMAN',2='EMBEST',3='UNKNOWN',4='EMBEST')
-P processor (0=2835, 1=2836 2=2837)
+P processor (0=2835, 1=2836, 2=2837, 3=2711)
 T type (0='A', 1='B', 2='A+', 3='B+', 4='Pi 2 B', 5='Alpha', 6='Compute Module')
 V revision (0-15)
 

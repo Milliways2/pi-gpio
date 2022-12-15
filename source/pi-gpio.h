@@ -67,9 +67,10 @@ typedef struct
    char *type;
    char revision[1024];
 } rpi_info;
-#endif /* CPUINFO_H */
 
 int get_rpi_info(rpi_info *info);
+unsigned get_revision(void);
+#endif /* CPUINFO_H */
 
 // extras.h
 #ifndef EXTRAS_H

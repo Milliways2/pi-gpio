@@ -193,7 +193,8 @@ void cleanup(void) {
     munmap((void *)pads_map, PADS_LEN);
   if (pwm_map)
     munmap((void *)pwm_map, PWM_LEN);
-  if (pads_map)
+//   if (pads_map) 2022-12-13 BUG!
+  if (clk_map)
     munmap((void *)clk_map, CLK_LEN);
 }
 // -----------------------------
@@ -265,7 +266,7 @@ void set_low_event(int gpio, int enable) {
 }
 // -----------------------------
 
-static void setupCheck(void) {
+void setupCheck(void) {
   if (piSetup)
     return;
   fprintf(stderr, "Pi Setup failure\n");
@@ -357,20 +358,10 @@ void setup_gpio(int gpio, int direction, int pud) {
   int offset = FSEL_OFFSET + (gpio / 10);
   int shift = (gpio % 10) * 3;
   set_pullupdn(gpio, pud);
-  //   if (direction == OUTPUT)
-  //     *(gpio_map + offset) =
-  //         (*(gpio_map + offset) & ~(7 << shift)) | (1 << shift);
-  //   else // direction == INPUT
-  //     *(gpio_map + offset) = (*(gpio_map + offset) & ~(7 << shift));
   if (direction) { //  OUTPUT
-    //     *(gpio_map + offset) = (*(gpio_map + offset) & ~(7 << shift));
-//     printf("Set GPIO%d OUTPUT\n", gpio);
     *(gpio_map + offset) =
         (*(gpio_map + offset) & ~(7 << shift)) | (1 << shift);
   } else { // INPUT
-    //     *(gpio_map + offset) = (*(gpio_map + offset) & ~(7 << shift)) | (1 <<
-    //     shift);
-//     printf("Set GPIO%d INPUT\n", gpio);
     *(gpio_map + offset) = (*(gpio_map + offset) & ~(7 << shift));
   }
 }
