@@ -5,8 +5,17 @@ The easiest way is to use the supplied 'build' script:
 
 	./build
 
-Alternatively  use the supplied Makefile or  'build' script in the source directory:
+Alternatively  use the supplied Makefile or 'build' script in the source directory:
 
 	sudo make install
 
 That should do a complete install of pi-gpio
+
+How to create an installable Debian Software Package file
+==============================================
+
+	Run ./buildDEB
+
+This will create a pi-gpio_….deb file for the current architecture which can be installed:-
+
+	sudo dpkg -i pi-gpio_….deb

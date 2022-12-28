@@ -1,11 +1,13 @@
 #
 # Makefile:
 #	pi-gpio library for the Raspberry Pi
+#	pi_gpio Python overlay
 #
 
 VERSION=$(shell cat ../VERSION)
 DESTDIR?=/usr
 PREFIX?=/local
+PYLIB?=/usr/lib/python3/dist-packages/
 
 LDCONFIG?=ldconfig
 V=1
@@ -74,8 +76,17 @@ install:	$(DYNAMIC)
 	$Q ln -sf $(DESTDIR)$(PREFIX)/lib/lib$(LIBNAME).so.$(VERSION)	$(DESTDIR)/lib/lib$(LIBNAME).so
 	$Q $(LDCONFIG)
 
+	@ echo "[Install man pages]"
 	$Q mkdir -p		$(DESTDIR)$(PREFIX)/share/man/man3
 	$Q install -m 0644 $(MANPAGES) 	$(DESTDIR)$(PREFIX)/share/man/man3
+
+	@ echo "[Install python overlay]"
+	mkdir -p		$(DESTDIR)/usr/lib/python3/dist-packages/
+	install -m 0644 pi_gpio.py 	$(DESTDIR)/usr/lib/python3/dist-packages/pi_gpio.py
+
+	@ echo "[Install gpioStatus]"
+	install -o root -m 0755 -p gpioStatus	/usr/bin/gpioStatus
+
 
 .PHONY:	uninstall
 uninstall:

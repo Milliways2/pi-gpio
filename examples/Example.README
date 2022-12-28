@@ -4,10 +4,10 @@ These programs are designed to test/demonstrate the pi-gpio library
 
 GPIO programs
 	bench-pi-gpio.c
-	get28.c
 	getGPIO.c
-	set28.c
 	setGPIO.c
+	get28.c
+	set28.c
 	pwmTest.c
 
 GPIO programs - require sudo
@@ -26,3 +26,26 @@ SPI - require configuration and extra hardware
 	aread.c		MCP3002 ADC
 
 Few of these do anything "useful" - use to build your application.
+
+__________________________________
+
+These programs are designed to test/demonstrate the pi_gpio python library
+
+	getInfo.py	displays Raspberry Pi Information
+
+GPIO programs
+	gpioStatus.py	Display status of all GPIO
+	bench-pi_gpio.py
+	getGPIO.py
+	setGPIO.py
+	pwmTest.py
+
+GPIO programs - require sudo
+	getPAD.py
+	hwPWMtest.py
+
+I²C - require configuration and extra hardware
+	DS3231.py
+
+SPI - require configuration and extra hardware
+	spidev_test.py
