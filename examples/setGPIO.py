@@ -1,4 +1,7 @@
 #! /usr/bin/env python3
+"""
+Demonstration of setup_gpio, output_gpio
+"""
 # 2022-11-25
 
 import pi_gpio as GPIO

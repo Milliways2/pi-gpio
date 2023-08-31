@@ -1,4 +1,7 @@
 #! /usr/bin/env python3
+"""
+Get values of BANK0 (GPIO0…27)
+"""
 # 2022-11-25
 
 import pi_gpio as GPIO

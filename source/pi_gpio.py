@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 # 2022-12-22
+# 2023-07-31
 """
 pi_gpio is a Python module for the RaspberryPi
 which uses the pi-gpio library to control the GPIO
@@ -53,11 +54,16 @@ OVERVIEW
 
         pwmSetMode - Select the native “balanced” mode or standard mark:space mode
 
-        pwmSetRange - Set the PWM range register
+        pwmSetRange - Set the PWM range
+
+        pwmWrite - Set the PWM mark value (duty cycle = mark/range) 
+
+        pwmSetDutycycle - Set the duty cycle
+        
+        pwmGetRange - Get the PWM range
 
         pwmSetClock - Set/Change the PWM clock
 
-        pwmWrite - Set the duty cycle mark/range
 
     *I²C*
         I²C MUST be enabled BEFORE using this code (see i2cOpen for detail)
@@ -92,7 +98,7 @@ OVERVIEW
         pwm_stop - Stop software PWM
 """
 
-VERSION='0.5'
+VERSION='0.6'
 
 import ctypes
 __plibrary = ctypes.CDLL('libpi-gpio.so')
@@ -142,6 +148,7 @@ INPUT=0
 OUTPUT=1
 
 def setup_gpio(gpio, direction, pud):
+# def setup_gpio(gpio, direction, pud=0):    # optional pud
     """
     Set gpio as an input or an output
     direction: 0=IN, 1=OUT
@@ -248,6 +255,7 @@ def pwmSetRange(gpio, range):
     In Mark:Space mode the output is HIGH for Mark time slots and LOW for Range-Mark
     The output is thus a fixed frequency; PWM frequency = PWM clock / range
     Set initial duty cycle to 50%
+    Return 0 if successful
     """
     return __plibrary.pwmSetRange(gpio, range)
 
@@ -255,8 +263,23 @@ def pwmWrite(gpio, value):
     """
     Set the duty cycle mark/range
     value: - 0-RANGE
+    Return 0 if successful
     """
-    __plibrary.pwmWrite(gpio, value)
+    return __plibrary.pwmWrite(gpio, value)
+ 
+def pwmSetDutycycle(gpio, duty_cycle):
+    """
+    Set the duty cycle
+    duty_cycle: - 0.0-1.0
+    Return 0 if successful
+    """
+    return __plibrary.pwmSetDutycycle(gpio, ctypes.c_float(duty_cycle))
+
+def pwmGetRange(gpio):
+    """
+    Get the range
+    """
+    return __plibrary.pwmGetRange(gpio)
 
 def pwmSetClock(divisor):
     """
@@ -264,6 +287,7 @@ def pwmSetClock(divisor):
     divisor - 1-4095
     Both channels share a common clock, which is Osc / divisor
     Osc is 19.2 MHz on most Pi models
+    Osc is 54M MHz on most Pi4 (BCM2711)
     """
     __plibrary.pwmSetClock(divisor)
 

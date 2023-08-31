@@ -3,6 +3,7 @@ This is a Hardware PWM module
 Based on WiringPi code
 
 2021-11-08
+2023-07-27	pwmGetRange, pwmSetDutycycle
 */
 
 /*
@@ -116,20 +117,37 @@ void pwmSetMode(int mode) {
 int pwmSetRange(int gpio, unsigned int range) {
   setupMemCheck();
   switch (gpioToPwmPort[gpio] & 0xf) {
-  case PWM0_DATA:
-    *(pwm_map + PWM0_RANGE) = range;
-    break;
-  case PWM1_DATA:
-    *(pwm_map + PWM1_RANGE) = range;
-    break;
-  default:
-    return -1;
-    delayMicroseconds(10);
+    case PWM0_DATA:
+      *(pwm_map + PWM0_RANGE) = range;
+      break;
+    case PWM1_DATA:
+      *(pwm_map + PWM1_RANGE) = range;
+      break;
+    default:
+      return -1;
+      delayMicroseconds(10);
   }
   return 0;
 }
 
-// Set an output PWM value
+// Get the PWM range.
+unsigned int pwmGetRange(int gpio) {
+  setupMemCheck();
+	unsigned int range;
+	switch (gpioToPwmPort[gpio] & 0xf) {
+    case PWM0_DATA:
+      range = *(pwm_map + PWM0_RANGE);
+      break;
+    case PWM1_DATA:
+      range = *(pwm_map + PWM1_RANGE);
+      break;
+    default:
+      return 0;
+  }
+  return range;
+}
+
+// Set an output PWM value 
 int pwmWrite(int pin, int value) {
   setupMemCheck();
   int channel = gpioToPwmPort[pin] & 0xf;
@@ -138,6 +156,11 @@ int pwmWrite(int pin, int value) {
     return 0;
   }
   return -1;
+}
+
+// Set PWM duty_cycle 
+int pwmSetDutycycle(int pin, float duty_cycle) {
+	return pwmWrite(pin, pwmGetRange(pin) * duty_cycle + 0.5);
 }
 
 // Put gpio pin into PWM mode

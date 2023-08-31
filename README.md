@@ -1,5 +1,5 @@
 # pi-gpio
-A dynamic C library to control Raspberry Pi GPIO channels  
+A fast dynamic C library to control Raspberry Pi GPIO channels  
 Supports all production models / all SOC
 
 This library has code to:-
@@ -31,6 +31,7 @@ This is available with `include pi_gpio`
 Utilities
 =========
 `gpioStatus` Display status of all GPIO
+`piserv`	A socket interface to `pi_gpio`
 
 Documentation
 =============
@@ -60,4 +61,6 @@ This allows GPIO access to members of the gpio group but does not provide access
 NOTE Users of pi-gpio or pi_gpio programs on *Raspberry Pi OS* should be members of group gpio (Ubuntu group dialout).  
 If error message "Pi Setup failure" the most likely cause is that user does not have access. 
 
-If run with root permision uses character device /dev/mem which allows full access but requires determining the address of the GPIO peripheral which varies depending on SoC.
+If run with root permission uses character device /dev/mem which allows full access but requires determining the address of the GPIO peripheral which varies depending on SoC.
+
+The socket interface allows access to PWM or clock if started with root permission.

@@ -19,3 +19,7 @@ How to create an installable Debian Software Package file
 This will create a pi-gpio_….deb file for the current architecture which can be installed:-
 
 	sudo dpkg -i pi-gpio_….deb
+
+It is recommended to install from a .deb file.
+The Release .deb files can be downloaded from https://github.com/Milliways2/pi-gpio/releases/
+If pi-gpio has been locally installed this should be removed using the uninstall script.

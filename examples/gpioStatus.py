@@ -4,6 +4,7 @@
 # 2021-12-20    Improve Old Style revision codes; ignore unwanted status bits
 # 2022-03-25    Zero 2 W
 # 2022-12-23    pi_gpio version
+# 2023-01-16    Include PROGNAME, LIBNAME in border; fix formatting
 
 """
 Display status of all GPIO
@@ -12,6 +13,8 @@ This version for pi_gpio
 import sys, os, time
 import subprocess
 import pi_gpio as GPIO
+LIBNAME='pi_gpio'
+PROGNAME='gpioStatus'
 
 MODES=["IN", "OUT", "ALT5", "ALT4", "ALT0", "ALT1", "ALT2", "ALT3"]
 HEADER = ('3.3v', '5v', 2, '5v', 3, 'GND', 4, 14, 'GND', 15, 17, 18, 27, 'GND', 22, 23, '3.3v', 24, 10, 'GND', 9, 25, 11, 8, 'GND', 7, 0, 1, 5, 'GND', 6, 12, 13, 'GND', 19, 16, 26, 20, 'GND', 21)
@@ -95,18 +98,20 @@ def print_gpio(pin_state):
     if rev < 16 :	# older models (pre PiB+)
         GPIOPINS = 26
 
-    print('+-----+------------+------+---+{:^10}+---+------+-----------+-----+'.format(Model) )
-    print('| BCM |    Name    | Mode | V |  Board   | V | Mode | Name      | BCM |')
-    print('+-----+------------+------+---+----++----+---+------+-----------+-----+')
+    print('+----------------------------+{:^10}+----------------------------+'.format(Model) )
+    HEAD='| BCM | Name      | Mode | V |  Board   | V | Mode | Name      | BCM |'
+    DIV='+-----+-----------+------+---+----++----+---+------+-----------+-----+'
+    print(HEAD)
+    print(DIV)
 
     for h in range(1, GPIOPINS, 2):
     # odd pin
         hh = HEADER[h-1]
         if(type(hh)==type(1)):
-            print('|{0:4} | {1[0]:<10} | {1[1]:<4} | {1[2]} |{2:3} '.format(hh, pin_state(hh), h), end='|| ')
+            print('|{0:4} | {1[0]:<10}| {1[1]:<4} | {1[2]} |{2:3} '.format(hh, pin_state(hh), h), end='|| ')
         else:
-#             print('|        {:18}   | {:2}'.format(hh, h), end=' || ')    # non-coloured output
-            print('|        {}{:18}   | {:2}{}'.format(COL[hh], hh, h, RESET), end=' || ')    # coloured output
+#            print('|        {:18}  | {:2}'.format(hh, h), end=' || ')    # non-coloured output
+          print('|        {}{:18}  | {:2}{}'.format(COL[hh], hh, h, RESET), end=' || ')    # coloured output
     # even pin
         hh = HEADER[h]
         if(type(hh)==type(1)):
@@ -114,13 +119,12 @@ def print_gpio(pin_state):
         else:
 #             print('{:2} |             {:9}      |'.format(h+1, hh))    # non-coloured output
             print('{}{:2} |             {:9}{}      |'.format(COL[hh], h+1, hh, RESET))    # coloured output
-    print('+-----+------------+------+---+----++----+---+------+-----------+-----+')
-    print('| BCM |    Name    | Mode | V |  Board   | V | Mode | Name      | BCM |')
-    print('+-----+------------+------+---+{:^10}+---+------+-----------+-----+'.format(Model) )
+    print(DIV)
+    print(HEAD)
+    print('+{:-^28}+{:^10}+{:-^28}+'.format(LIBNAME, Model, PROGNAME) )
 
 def main():
     global TYPE, rev
-#     rev = get_hardware_revision()
     rev = GPIO.get_revision()
 
     if(rev & 0x800000):   # New Style

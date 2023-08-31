@@ -4,16 +4,18 @@ This is a hardware PWM test program
 It generates 2 PWM outputs @10kHz with differing duty cycles
 
  2022-12-01
+ 2023-07-27 new functions
+ 2023-07-31
 """
 
 import pi_gpio as GPIO
 import ctypes
 import time
 
-PWM0 = 12 # this is physical pin 32
-PWM1 = 13 # this is physical pin 33
-# PWM0 = 18                    # this is physical pin 12
-# PWM1 = 19                    # this is physical pin 35
+# PWM0 = 12 # this is physical pin 32
+# PWM1 = 13 # this is physical pin 33
+PWM0 = 18                    # this is physical pin 12
+PWM1 = 19                    # this is physical pin 35
 
 GPIO.setup()
 
@@ -38,5 +40,14 @@ GPIO.pwmSetClock(DIVIDER)  # gives a precise 10kHz signal
 GPIO.pwmSetRange(PWM0, RANGE)
 # GPIO.pwmWrite(PWM0, (RANGE // 4)) # duty cycle of 25%
 GPIO.pwmWrite(PWM0, (RANGE // 8)) # duty cycle of 12.5%
+
+GPIO.pwmSetRange(PWM1, RANGE)
+GPIO.pwmWrite(PWM1, (RANGE // 4)) # duty cycle of 25%
+
+
+#  2023-07-27 new functions
+GPIO.pwmSetDutycycle(PWM0, 0.6)
+
+print(GPIO.pwmGetRange(PWM0))
 
 GPIO.cleanup()

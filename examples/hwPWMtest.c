@@ -46,9 +46,10 @@ int main(int argc, char *argv[]) {
 
   pwmSetRange(PWM0, RANGE);
   pwmWrite(PWM0, RANGE / 4); // duty cycle of 25%
+  pwmSetDutycycle(PWM0, 0.3);
 
   pwmSetRange(PWM1, RANGE);
   pwmWrite(PWM1, RANGE / 2); // duty cycle of 50%
-	cleanup();
+  cleanup();
   return 0; // PWM output stays on after exit
 }

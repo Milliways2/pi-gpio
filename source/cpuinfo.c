@@ -22,10 +22,11 @@ SOFTWARE.
 
 /* See the following for up to date information:
  * https://www.raspberrypi.org/documentation/hardware/raspberrypi/revision-codes/README.md (obsolete 2021-08-09)
- * https://www.raspberrypi.org/documentation/computers/raspberry-pi.html#raspberry-pi-revision-codes
+ * https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#raspberry-pi-revision-codes
  */
 // 2021-10-30 Zero 2 W
 // 2022-11-29 BCM2711
+// 2023-08-29 update links, revision
 
 #include <stdio.h>
 #include <stdint.h>
@@ -52,8 +53,8 @@ int get_rpi_info(rpi_info *info)
 {
    FILE *fp;
    char buffer[1024];
-   char hardware[1024];
-   char revision[1024];
+   char hardware[32];
+   char revision[32];
    int found = 0;
    int len;
 
@@ -66,7 +67,7 @@ int get_rpi_info(rpi_info *info)
       sprintf(revision, "%x", ntohl(n));
       found = 1;
    }
-   else if ((fp = fopen("/proc/cpuinfo", "r"))) {
+   else if ((fp = fopen("/proc/cpuinfo", "r"))) { // Pre Device Tree
       while(!feof(fp) && fgets(buffer, sizeof(buffer), fp)) {
          sscanf(buffer, "Hardware	: %s", hardware);
          if (strcmp(hardware, "BCM2708") == 0 ||
@@ -268,7 +269,7 @@ int get_rpi_info(rpi_info *info)
 // This is easier than trying to read rpi_info in python!
 char *get_rpi_dict() {
   rpi_info info;
-  char dict_info[1024];
+  char dict_info[127];
 
   get_rpi_info(&info);
   sprintf(dict_info,
@@ -284,13 +285,14 @@ void free_memory(char* ptr) {
 }
 
 /*
-
+Correct as at 2023-08-27
 32 bits
 NEW           23: will be 1 for the new scheme, 0 for the old scheme
-MEMSIZE       20: 0=256M 1=512M 2=1G
-MANUFACTURER  16: 0=SONY 1=EGOMAN
-PROCESSOR     12: 0=2835 1=2836
-TYPE          04: 0=MODELA 1=MODELB 2=MODELA+ 3=MODELB+ 4=Pi2 MODEL B 5=ALPHA 6=CM
+MEMSIZE       20: 0=256M 1=512M 2=1G 3=2GB 4=4GB 5=8GB
+MANUFACTURER  16: 0=Sony UK 1=Egoman 2=Embest 3=Sony Japan 4=Embest 5=Stadium
+PROCESSOR     12: 0: BCM2835 1: BCM2836 2: BCM2837 3: BCM2711
+TYPE          04: 0:A 1:B 2:A+ 3:B+ 4:2B 5:Alpha 6:CM1 8:3B 9:Zero a:CM3 c:Zero W
+                  d:3B+ e:3A+ 10:CM3+ 11:4B 12:Zero 2 W 13:400 14:CM4 15:CM4S
 REV           00: 0=REV0 1=REV1 2=REV2
 
 pi2 = 1<<23 | 2<<20 | 1<<12 | 4<<4 = 0xa01040
@@ -299,10 +301,10 @@ pi2 = 1<<23 | 2<<20 | 1<<12 | 4<<4 = 0xa01040
 SRRR MMMM PPPP TTTT TTTT VVVV
 
 S scheme (0=old, 1=new)
-R RAM (0=256, 1=512, 2=1024)
-M manufacturer (0='SONY',1='EGOMAN',2='EMBEST',3='UNKNOWN',4='EMBEST')
-P processor (0=2835, 1=2836, 2=2837, 3=2711)
-T type (0='A', 1='B', 2='A+', 3='B+', 4='Pi 2 B', 5='Alpha', 6='Compute Module')
+R RAM 
+M manufacturer
+P processor
+T type
 V revision (0-15)
 
 */

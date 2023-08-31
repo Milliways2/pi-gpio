@@ -27,6 +27,7 @@ extern "C" {
 #endif
 
 int setup(void);
+void cleanup(void);
 void setup_gpio(int gpio, int direction, int pud);
 int gpio_function(int gpio);
 void output_gpio(int gpio, int value);
@@ -39,14 +40,10 @@ void set_falling_event(int gpio, int enable);
 void set_high_event(int gpio, int enable);
 void set_low_event(int gpio, int enable);
 int eventdetected(int gpio);
-void cleanup(void);
 
 // 2022-11-19	Fix setup_gpio direction
 #define INPUT  0
 #define OUTPUT 1
-// #define INPUT  1 // is really 0 for control register!
-// #define OUTPUT 0 // is really 1 for control register!
-// #define ALT0   4
 
 #define HIGH 1
 #define LOW  0
@@ -116,7 +113,9 @@ int pwmSetGpio(int gpio);
 void pwmSetMode(int mode);
 int pwmSetRange(int gpio, unsigned int range);
 int pwmWrite(int gpio, int value);
+int pwmSetDutycycle(int pin, float duty_cycle);
 void pwmSetClock(int divisor);
+unsigned int pwmGetRange(int gpio);
 
 #define	PWM_MODE_MS		0
 #define	PWM_MODE_BAL	1

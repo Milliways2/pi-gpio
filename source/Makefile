@@ -7,7 +7,7 @@
 VERSION=$(shell cat ../VERSION)
 DESTDIR?=/usr
 PREFIX?=/local
-PYLIB?=/usr/lib/python3/dist-packages/
+PYLIB?=/usr/lib/python3/dist-packages
 
 LDCONFIG?=ldconfig
 V=1
@@ -82,7 +82,7 @@ install:	$(DYNAMIC)
 
 	@ echo "[Install python overlay]"
 	mkdir -p		$(DESTDIR)/usr/lib/python3/dist-packages/
-	install -m 0644 pi_gpio.py 	$(DESTDIR)/usr/lib/python3/dist-packages/pi_gpio.py
+	install -m 0644 pi_gpio.py 	$(PYLIB)/pi_gpio.py
 
 	@ echo "[Install gpioStatus]"
 	install -o root -m 0755 -p gpioStatus	/usr/bin/gpioStatus
