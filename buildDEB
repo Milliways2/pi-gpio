@@ -8,6 +8,9 @@
 # 2022-12-12 REVISION
 # 2022-12-23 /usr/lib/python3/dist-packages/
 # 2022-12-24 gpioStatus
+# 2023-09-11 pi-gpiod
+# 2023-09-13 pi_sock.py
+# 2023-09-14 pi_sock.lib
 
 # Directory containing code source
 # Edit if not default
@@ -28,7 +31,6 @@ if [[ $(uname -m) == "aarch64" ]]; then
 else
 	ARCH='armhf'
 fi
-# echo $ARCH
 
 REVISION="$1"
 if [ "${REVISION}" = "" ]; then
@@ -36,7 +38,7 @@ REVISION="1"
 fi
 
 VERS=$(cat $CODEDIR/VERSION)
-VERSION="$VERS-$REVISION"
+DEB_VERSION="$VERS-$REVISION"
 
 # Rebuild library files
 CURRENT_DIR=$(pwd)
@@ -46,7 +48,7 @@ make
 cd $CURRENT_DIR
 
 DYNAMIC="lib$LIBNAME.so.$VERS"
-DEB_DIR_NAME="${LIBNAME}_${VERSION}_$ARCH"
+DEB_DIR_NAME="${LIBNAME}_${DEB_VERSION}_$ARCH"
 DEB_DIR="$DISTDIR/$DEB_DIR_NAME"
 
 # Make DEB structure
@@ -61,11 +63,16 @@ mkdir -p $DEB_DIR/DEBIAN
 mkdir -p $DEB_DIR/usr/lib/python3/dist-packages/
 mkdir -p $DEB_DIR/usr/bin
 
+# Copy libraries
+echo "Copy libraries"
 cp $SOURCE/$DYNAMIC $DEB_DIR/usr/lib/
+
+cp $SOURCE/libpi-sock.so.$VERS $DEB_DIR/usr/lib/
 ln -sfr $DEB_DIR/usr/lib/$DYNAMIC $DEB_DIR/usr/lib/lib${LIBNAME}.so
+ln -sfr $DEB_DIR/usr/lib/libpi-sock.so.$VERS $DEB_DIR/usr/lib/libpi-sock.so
 
 # list of headers to include
-HEADERS="$LIBNAME.h pi-vers.h pi-spi.h pi-i2c.h MCP23017.h"
+HEADERS="$LIBNAME.h pi-vers.h pi-spi.h pi-i2c.h pi-sock.h MCP23017.h"
 # list of man pages to include
 MANPAGES="$LIBNAME.3 MCP23017.3"
 
@@ -73,7 +80,9 @@ cd $SOURCE
 install -m 0644 $HEADERS	$DEB_DIR/usr/include/
 install -m 0644 $MANPAGES	$DEB_DIR/usr/share/man/man3/
 install -m 0644 -p pi_gpio.py	$DEB_DIR/usr/lib/python3/dist-packages/
+install -m 0644 -p pi_sock.py	$DEB_DIR/usr/lib/python3/dist-packages/
 sudo install -o root -m 0755 -p gpioStatus	$DEB_DIR/usr/bin/
+sudo install -o root -m 0755 -p pi-gpiod	$DEB_DIR/usr/bin/
 
 # Create DEBIAN control file
 cat << EOF > $DEB_DIR/DEBIAN/control

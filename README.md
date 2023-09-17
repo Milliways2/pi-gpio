@@ -6,12 +6,12 @@ This library has code to:-
 
 Read Raspberry Pi Information
 
-Perform basic GPIO functions
+Perform basic GPIO functions  
 	• Set gpio as input or output  
 	• Read/Write gpio  
 	• Set pullup/down of gpio  
 	• Read the current gpio mode  
-	• Read gpio pull/up down (Pi4/BCM2711 only)  
+	• Read gpio pull/up down (Pi4/BCM2711 only)
 
 Software PWM on all pins
 
@@ -25,17 +25,18 @@ SPI
 
 Overlays
 ========
-Includes a python overlay with access to most functions  
-This is available with `include pi_gpio`
+Includes python overlays with access to most functions  
+This is available with `include pi_gpio`  
+Socket access `include pi_sock`
 
 Utilities
 =========
-`gpioStatus` Display status of all GPIO
+`gpioStatus` Display status of all GPIO  
 `piserv`	A socket interface to `pi_gpio`
 
 Documentation
 =============
-To read documentation:-
+To read documentation:-  
 	C:	`man pi-gpio` & `man MCP23017`  
 	Python:	`python3 -m pydoc pi_gpio`  
 

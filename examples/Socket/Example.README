@@ -1,0 +1,23 @@
+These programs are designed to test/demonstrate the pi-sock library
+
+	bench-pi-gpioS.c	Toggles a GPIO pin and measures rate.
+
+GPIO programs
+	testS.c	Tests all functions
+
+These don't do anything "useful" - use as examples to build your application.
+
+__________________________________
+
+These programs are designed to test/demonstrate the pi_sock python socket library
+
+	getInfoS.py	displays Raspberry Pi Information
+
+GPIO programs
+	gpioStatusS.py	Display status of all GPIO
+	bench-pi_gpioS.py
+	getGPIOS.py
+	setGPIOS.py
+	pwmTestS.py
+	getPADS.py
+	hwPWMtestS.py

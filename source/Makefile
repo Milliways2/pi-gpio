@@ -1,8 +1,13 @@
-#
 # Makefile:
-#	pi-gpio library for the Raspberry Pi
-#	pi_gpio Python overlay
-#
+#	pi-gpio 	library for the Raspberry Pi
+#	pi-gpiod	Socket Server
+
+#	Install tools
+#	pi_gpio 	Python overlay
+#	pi_sock 	Python Socket overlay
+#	gpioStatus	Display status of all GPIO
+
+# 2023-09-15
 
 VERSION=$(shell cat ../VERSION)
 DESTDIR?=/usr
@@ -46,10 +51,17 @@ MANPAGES = $(LIBNAME).3 MCP23017.3
 
 OBJ	=	$(SRC:.c=.o)
 
-all:		$(DYNAMIC)
+all:	$(DYNAMIC) pi-gpiod libpi-sock.so
+
+# Make pi-gpiod Socket Server code.
+pi-gpiod: pi-gpiod.c process_data.c
+	$(CC) pi-gpiod.c process_data.c -o $@ -lpi-gpio -lpthread -lm -lcrypt -lrt
 
 pi-vers.h:	../VERSION
 	echo "#define VERSION \"`cat ../VERSION`\"" > pi-vers.h
+
+libpi-sock.so: pi-sock.c pi-sock.h
+	$(CC) -shared -Wl,-soname,libpi-sock.so  -fPIC -o libpi-sock.so.$(VERSION) -lm -lrt pi-sock.c 
 
 
 $(DYNAMIC):	$(OBJ)
@@ -63,30 +75,31 @@ $(DYNAMIC):	$(OBJ)
 clean:
 	@ echo "[Clean]"
 	$Q rm -f $(OBJ) $(OBJ_I2C) *~ core tags lib$(LIBNAME).*
+	$Q rm pi-gpiod
 
 .PHONY:	install
 install:	$(DYNAMIC)
 	@ echo "[Install Headers]"
-	$Q install -m 0755 -d						$(DESTDIR)$(PREFIX)/include
-	$Q install -m 0644 $(HEADERS)					$(DESTDIR)$(PREFIX)/include
+	$Q install -m 0755 -d $(DESTDIR)$(PREFIX)/include
+	$Q install -m 0644 $(HEADERS) $(DESTDIR)$(PREFIX)/include
 
 	@ echo "[Install Dynamic Lib]"
-	$Q install -m 0755 -d						$(DESTDIR)$(PREFIX)/lib
-	$Q install -m 0755 lib$(LIBNAME).so.$(VERSION)			$(DESTDIR)$(PREFIX)/lib/lib$(LIBNAME).so.$(VERSION)
+	$Q install -m 0755 -d $(DESTDIR)$(PREFIX)/lib
+	$Q install -m 0755 lib$(LIBNAME).so.$(VERSION) $(DESTDIR)$(PREFIX)/lib/lib$(LIBNAME).so.$(VERSION)
 	$Q ln -sf $(DESTDIR)$(PREFIX)/lib/lib$(LIBNAME).so.$(VERSION)	$(DESTDIR)/lib/lib$(LIBNAME).so
 	$Q $(LDCONFIG)
 
 	@ echo "[Install man pages]"
-	$Q mkdir -p		$(DESTDIR)$(PREFIX)/share/man/man3
+	$Q mkdir -p $(DESTDIR)$(PREFIX)/share/man/man3
 	$Q install -m 0644 $(MANPAGES) 	$(DESTDIR)$(PREFIX)/share/man/man3
 
-	@ echo "[Install python overlay]"
-	mkdir -p		$(DESTDIR)/usr/lib/python3/dist-packages/
+	@ echo "[Install python overlays]"
+	mkdir -p $(DESTDIR)/usr/lib/python3/dist-packages/
 	install -m 0644 pi_gpio.py 	$(PYLIB)/pi_gpio.py
+	install -m 0644 pi_sock.py 	$(PYLIB)/pi_sock.py
 
 	@ echo "[Install gpioStatus]"
 	install -o root -m 0755 -p gpioStatus	/usr/bin/gpioStatus
-
 
 .PHONY:	uninstall
 uninstall:

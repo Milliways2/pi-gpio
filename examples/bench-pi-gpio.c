@@ -5,11 +5,7 @@ Using pi-gpio
 TO BUILD
 
 gcc -Wall -o bench-pi-gpio bench-pi-gpio.c -lpi-gpio
-
-sudo ./bench-pi-gpio
-
 */
-
 // 2021-08-11
 
 #define SigOUT 12
@@ -20,10 +16,8 @@ sudo ./bench-pi-gpio
 #include <sys/time.h>
 #include <time.h>
 
-#include <fcntl.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include <sys/mman.h>
 
 #include <pi-gpio.h>
 
