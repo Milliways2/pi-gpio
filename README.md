@@ -32,7 +32,7 @@ Socket access `include pi_sock`
 Utilities
 =========
 `gpioStatus` Display status of all GPIO  
-`piserv`	A socket interface to `pi_gpio`
+`pi-gpiod`	A socket interface to `pi_gpio`
 
 Documentation
 =============
@@ -64,4 +64,4 @@ If error message "Pi Setup failure" the most likely cause is that user does not 
 
 If run with root permission uses character device /dev/mem which allows full access but requires determining the address of the GPIO peripheral which varies depending on SoC.
 
-The socket interface allows access to PWM or clock if started with root permission.
+The socket interface allows access without root permission.
