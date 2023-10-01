@@ -1,6 +1,6 @@
 # pi-gpio
 A fast dynamic C library to control Raspberry Pi GPIO channels  
-Supports all production models / all SOC
+Supports all current (September 2023) production models / all SOC
 
 This library has code to:-
 
