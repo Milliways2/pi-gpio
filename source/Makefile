@@ -8,6 +8,7 @@
 #	gpioStatus	Display status of all GPIO
 
 # 2023-09-15
+# 2024-02-20
 
 VERSION=$(shell cat ../VERSION)
 DESTDIR?=/usr
@@ -75,6 +76,7 @@ $(DYNAMIC):	$(OBJ)
 clean:
 	@ echo "[Clean]"
 	$Q rm -f $(OBJ) $(OBJ_I2C) *~ core tags lib$(LIBNAME).*
+	$Q rm libpi-sock.*
 	$Q rm pi-gpiod
 
 .PHONY:	install
@@ -99,7 +101,8 @@ install:	$(DYNAMIC)
 	install -m 0644 pi_sock.py 	$(PYLIB)/pi_sock.py
 
 	@ echo "[Install gpioStatus]"
-	install -o root -m 0755 -p gpioStatus	/usr/bin/gpioStatus
+# 	install -o root -m 0755 -p gpioStatus	/usr/bin/gpioStatus
+	install -o root -m 0755 -p gpioStatus	$(DESTDIR)$(PREFIX)/bin/gpioStatus
 
 .PHONY:	uninstall
 uninstall:

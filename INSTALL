@@ -1,6 +1,17 @@
 How to install pi-gpio
 =======================
+The recommended installation method is to download the latest Release .deb file from
+https://github.com/Milliways2/pi-gpio/releases/latest  
+This has both hf (32bit) & 64 bit versions and python libraries (but not examples)
+which can be installed with
 
+	sudo dpkg -i pi-gpio_….deb
+
+The examples can be downloaded from:-	
+	https://github.com/Milliways2/pi-gpio/tree/main/examples
+
+How to build from source
+========================
 The easiest way is to use the supplied 'build' script:
 
 	./build
@@ -12,7 +23,7 @@ Alternatively  use the supplied Makefile or 'build' script in the source directo
 That should do a complete install of pi-gpio
 
 How to create an installable Debian Software Package file
-==============================================
+=========================================================
 
 	Run ./buildDEB
 
@@ -21,5 +32,7 @@ This will create a pi-gpio_….deb file for the current architecture which can b
 	sudo dpkg -i pi-gpio_….deb
 
 It is recommended to install from a .deb file.
-The Release .deb files can be downloaded from https://github.com/Milliways2/pi-gpio/releases/
+
+The Release .deb files can be downloaded from https://github.com/Milliways2/pi-gpio/releases/latest  
 If pi-gpio has been locally installed this should be removed using the uninstall script.
+
