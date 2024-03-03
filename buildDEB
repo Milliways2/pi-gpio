@@ -11,6 +11,7 @@
 # 2023-09-11 pi-gpiod
 # 2023-09-13 pi_sock.py
 # 2023-09-14 pi_sock.lib
+# 2024-02-28 added kpwm
 
 # Directory containing code source
 # Edit if not default
@@ -26,11 +27,12 @@ if [ ! -e $DISTDIR ]; then
 	mkdir $DISTDIR
 fi
 
-if [[ $(uname -m) == "aarch64" ]]; then
-	ARCH='arm64'
-else
-	ARCH='armhf'
-fi
+ARCH=$(dpkg --print-architecture)
+# if [[ $(uname -m) == "aarch64" ]]; then
+# 	ARCH='arm64'
+# else
+# 	ARCH='armhf'
+# fi
 
 REVISION="$1"
 if [ "${REVISION}" = "" ]; then
@@ -80,6 +82,7 @@ cd $SOURCE
 install -m 0644 $HEADERS	$DEB_DIR/usr/include/
 install -m 0644 $MANPAGES	$DEB_DIR/usr/share/man/man3/
 install -m 0644 -p pi_gpio.py	$DEB_DIR/usr/lib/python3/dist-packages/
+install -m 0644 -p kpwm.py	$DEB_DIR/usr/lib/python3/dist-packages/
 install -m 0644 -p pi_sock.py	$DEB_DIR/usr/lib/python3/dist-packages/
 sudo install -o root -m 0755 -p gpioStatus	$DEB_DIR/usr/bin/
 sudo install -o root -m 0755 -p pi-gpiod	$DEB_DIR/usr/bin/

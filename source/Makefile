@@ -7,8 +7,7 @@
 #	pi_sock 	Python Socket overlay
 #	gpioStatus	Display status of all GPIO
 
-# 2023-09-15
-# 2024-02-20
+# 2024-02-29
 
 VERSION=$(shell cat ../VERSION)
 DESTDIR?=/usr
@@ -29,7 +28,8 @@ DYNAMIC=lib$(LIBNAME).so.$(VERSION)
 DEBUG	= -O2
 INCLUDE	= -I.
 DEFS	= -D_GNU_SOURCE
-CFLAGS	= $(DEBUG) $(DEFS) -Wformat=2 -Wall -Wextra -Winline $(INCLUDE) -pipe -fPIC
+CFLAGS	= $(DEBUG) $(DEFS) -Wformat=2 -Wall -Wextra -Winline $(INCLUDE) -Wno-pointer-to-int-cast -pipe -fPIC
+# CFLAGS	= $(DEBUG) $(DEFS) -Wformat=2 -Wall -Wextra -Winline $(INCLUDE) -pipe -fPIC
 LIBS    = -lm -lpthread -lrt -lcrypt
 
 ###############################################################################
@@ -39,6 +39,7 @@ SRC	=	c_gpio.c \
 		extras.c \
 		soft_pwm.c \
 		hard_pwm.c \
+		kpwm.c \
 		spi.c \
 		i2c.c \
 		pi-vers.h \

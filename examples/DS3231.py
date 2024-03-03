@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-# 2022-12-17
+# 2023-09-30
 
 import pi_gpio as GPIO
 import sys
@@ -39,7 +39,9 @@ if (handle < 0):
 
 secs = GPIO.i2cRead8(handle, SECONDS)    # Detect device exists at address
 if (secs < 0):
-    print("No device at address {:02x}".format(secs))
+    print("No device at address {:02x}".format(i2cAddr))
+    sys.exit(-1)
+secs = bcdToDec(secs)
 mins = bcdToDec(GPIO.i2cRead8(handle, MINUTES))
 hours = bcdToDec(GPIO.i2cRead8(handle, HOURS))
 days = bcdToDec(GPIO.i2cRead8(handle, DATE))

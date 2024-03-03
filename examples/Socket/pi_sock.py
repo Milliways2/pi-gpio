@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-# 2023-09-15
+# 2023-10-09
 """
 pi-sock is a client program to send socket commands to a Pi.
 The target Pi must have a running pi-gpiod socket server to receive and act on messages.
@@ -46,8 +46,7 @@ OVERVIEW
     pwmGetRange - Get the PWM range
 
     pwmSetClock - Set/Change the PWM clock
-"""
-"""
+
   *I²C*
     I²C MUST be enabled BEFORE using this code (see i2cOpen for detail)
 
@@ -65,15 +64,6 @@ OVERVIEW
 
     i2cWrite16 - Write a single word (16 bits) to the specified register
 
-  *SPI*
-    SPI MUST be enabled BEFORE using this code (see spiOpen for detail)
-
-    spiOpen - Initialise a SPI channel
-
-    spiDataRW2 - Write and Read a block of data over the SPI bus
-
-    spiDataRW - Write and Read a block of data over the SPI bus
-
   *Software PWM*
     pwm_set_duty_cycle - Change the duty cycle
 
@@ -82,10 +72,22 @@ OVERVIEW
     pwm_start - Start software PWM
 
     pwm_stop - Stop software PWM
+    
+    pwm_exists - Check if there is a PWM for this gpio
+"""
+"""
+  *SPI*
+    SPI MUST be enabled BEFORE using this code (see spiOpen for detail)
+
+    spiOpen - Initialise a SPI channel
+
+    spiDataRW2 - Write and Read a block of data over the SPI bus
+
+    spiDataRW - Write and Read a block of data over the SPI bus
 """
 
 import sys, os, time
-import socket
+import socket, base64
 
 HOST = "localhost"  
 PORT = 31425  
@@ -101,6 +103,9 @@ class SOCKCLIENT:
     self.port = port
     self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     self.sock.connect((self.host, self.port))
+    
+  def close(self):
+    self.sock.close()
 
   def send2pi(self, cmd, *pargs):
     """
@@ -113,13 +118,16 @@ class SOCKCLIENT:
     return res[:-1].decode()
 
 
-def socket_connect(host=HOST) :
+def socket_connect(host=HOST):
   """
   Connect to socket server on host
   host: default localhost
   """
   global s
   s = SOCKCLIENT(host)
+
+def socket_disconnect():
+  s.close()
 
 #   Information
 def get_revision():
@@ -208,7 +216,6 @@ def getPAD(group):
       drive = padstate & 7
   """
   return int(s.send2pi('getPAD'), group)
-#     return __plibrary.getPAD(group)
 
 def setPAD(group, padstate):
   """
@@ -217,7 +224,6 @@ def setPAD(group, padstate):
   padstate: - 0-0xF : padstate = slew << 4 | hyst << 3 | drive
   """
   s.send2pi('setPAD', group, padstate)
-#   return __plibrary.setPAD(group, padstate)
 
 #   Hardware PWM
 
@@ -284,3 +290,134 @@ def pwmSetClock(divisor):
     Osc is 54M MHz on most Pi4 (BCM2711)
   """
   s.send2pi('pwmSetClock', divisor)
+
+#  I²C
+#   I²C MUST be enabled BEFORE using this code (see i2cOpen for detail)
+
+def i2cOpen(i2cBus,  i2cAddr):
+  """
+  Open I²C device
+  To enable I²C use raspi-config
+  or ensure the line dtparam=i2c_arm=on or dtparam=i2c=on is not commented out in /boot/config.txt
+  I²C can be enabled on the fly with a command e.g. sudo dtparam i2c
+  NOTE this will NOT return an error if there is no I²C device at i2cAddr
+  Use i2cRead etc.  to check
+
+  i2cBus: - 0-1
+  i2cAddr: - 0-0x7F
+
+  Returns handle to the I²C device, or -1 on error
+  """  
+  return int(s.send2pi('i2cOpen', i2cBus, i2cAddr))
+
+def i2cRead(handle):
+  """
+  Read a single word from a device, without specifying a register
+  handle: - handle to the I²C device
+
+  Returns word read
+  """
+  return int(s.send2pi('i2cRead', handle))
+
+def i2cRead8( handle, i2cReg):
+  """
+  Read a single word (8 bits) from register
+  handle: - handle to the I²C device
+  i2cReg: - I²C register
+
+  Returns word read
+  """
+  return int(s.send2pi('i2cRead8', handle, i2cReg))
+
+def i2cRead16(handle, i2cReg):
+  """
+  Read a single word (16 bits) from register
+  handle: - handle to the I²C device
+  i2cReg: - I²C register
+
+  Returns Word read
+  """
+  return int(s.send2pi('i2cRead16', handle, i2cReg))
+
+def i2cWrite(handle, data):
+  """
+  Write a single word (8 bits) to a device, without specifying a register
+  handle: - handle to the I²C device
+  data: - byte to write
+
+  Returns result code
+  """
+  return int(s.send2pi('i2cWrite', handle, data))
+
+def i2cWrite8(handle, i2cReg, value):
+  """
+  Write a single word (8 bits) to the specified register
+  handle: - handle to the I²C device
+  i2cReg: - I²C register
+  data: - word to write
+
+  Returns result code
+  """
+  return int(s.send2pi('i2cWrite8', handle,  i2cReg,  value))
+
+def i2cWrite16(handle, i2cReg, value):
+  """
+  Write a single word (16 bits) to the specified register
+  handle: - handle to the I²C device
+  i2cReg: - I²C register
+  data: - word to write
+
+  Returns result code
+  """
+  return int(s.send2pi('i2cWrite16', handle, i2cReg, value))
+
+#   Software PWM
+
+def pwm_set_duty_cycle(gpio, dutycycle):
+  """
+  Change the duty cycle
+  dutycycle: - between 0.0 and 100.0
+  """
+  s.send2pi('pwm_set_duty_cycle', gpio, dutycycle)
+
+def pwm_set_frequency(gpio, freq):
+  """
+  Change the frequency
+  frequency: - frequency in Hz (freq > 1.0)
+  """
+  s.send2pi('pwm_set_frequency', gpio, freq)
+
+def pwm_start(gpio):
+  """
+  Start software PWM
+  """
+  s.send2pi('pwm_start', gpio)
+
+def pwm_stop(gpio):
+  """
+  Stop software PWM
+  MUST be called before exit
+  Include delay BEFORE calling cleanup()
+  """
+  s.send2pi('pwm_stop', gpio)
+
+def pwm_exists(gpio):
+  """
+  Returns 1 if there is a PWM for this gpio
+  """
+  return int(s.send2pi('pwm_exists', gpio))
+
+#  SPI
+def spiDataRW(channel, data, len):
+  """
+  Write and Read a block of data over the SPI bus
+      Shared Tx/Rx buffer
+  channel: - 0-3 (depending on available chip selects)
+  data: pointer to buffer containing transmit data (will be overwritten by receive data)
+  len: length of buffer
+
+  Returns result code
+  """
+  b64data = base64.b64encode(data)
+  s.send2pi('spiDataRW', channel, len, b64data)
+  return b64data

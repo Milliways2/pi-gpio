@@ -1,6 +1,6 @@
 # pi-gpio
 A fast dynamic C library to control Raspberry Pi GPIO channels  
-Supports all current (September 2023) production models / all SOC  
+Supports all production models available in September 2023 / all SOC  
 **NOTE does not run on Pi5/BCM2712**
 
 This library has code to:-
@@ -20,6 +20,8 @@ Hardware PWM support
 
 Read/Set PAD drive, hysteresis & slew settings
 
+kernel PWM
+
 I²C
 
 SPI
@@ -27,7 +29,7 @@ SPI
 Overlays
 ========
 Includes python overlays with access to most functions  
-This is available with `include pi_gpio`  
+This is available with `include pi_gpio` or `include kpwm` for kernel PWM
 Socket access `include pi_sock`
 
 Utilities
@@ -40,6 +42,7 @@ Documentation
 To read documentation:-  
 	C:	`man pi-gpio` & `man MCP23017`  
 	Python:	`python3 -m pydoc pi_gpio`  
+	Python:	`python3 -m pydoc kpwm`  
 
 Extras
 ======
@@ -55,7 +58,7 @@ Dependencies
 Most code uses direct hardware access to the SoC Peripheral and is independent of the kernel.
 
 	• Raspberry Pi Information is determined from a register on the SoC, which is available from device-tree.  
-	• I²C & SPI use kernel drivers.
+	• kernel PWM, I²C & SPI use kernel drivers.
 
 If run without root permision pi-gpio uses character device /dev/gpiomem to map the GPIO register page.  
 This allows GPIO access to members of the gpio group but does not provide access the PWM or clock hardware registers.

@@ -2,6 +2,7 @@
 # 2022-12-22
 # 2023-07-31
 # 2023-09-07
+# 2023-10-03
 """
 pi_gpio is a Python module for the RaspberryPi
 which uses the pi-gpio library to control the GPIO
@@ -449,3 +450,9 @@ def pwm_stop(gpio):
   Include delay BEFORE calling cleanup()
   """
   __plibrary.pwm_stop(gpio)
+
+def pwm_exists(gpio):
+  """
+  Returns 1 if there is a PWM for this gpio
+  """
+  return __plibrary.pwm_exists(gpio)

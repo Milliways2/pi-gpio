@@ -1,23 +1,29 @@
 These programs are designed to test/demonstrate the pi-sock library
 
-	bench-pi-gpioS.c	Toggles a GPIO pin and measures rate.
+	bench-pi-gpioS.c	Toggles a GPIO pin and measures rate
+	DS3231S.c		Display status of DS3231 RTC
 
 GPIO programs
-	testS.c	Tests all functions
+	testS.c			Test socket equivalents of pi-gpio functions
 
 These don't do anything "useful" - use as examples to build your application.
 
+pi-sock.c is provided to compile on remote system (requires changes to Makefile & #include)
 __________________________________
 
 These programs are designed to test/demonstrate the pi_sock python socket library
 
-	getInfoS.py	displays Raspberry Pi Information
+	getInfoS.py		Displays Raspberry Pi Information
 
 GPIO programs
-	gpioStatusS.py	Display status of all GPIO
-	bench-pi_gpioS.py
-	getGPIOS.py
-	setGPIOS.py
-	pwmTestS.py
-	getPADS.py
-	hwPWMtestS.py
+	gpioStatusS.py		Display status of all GPIO
+	getRevisionS.py		Raspberry Pi Revision Code
+	bench-pi_gpioS.py	Toggles a GPIO pin and measures rate.
+	getGPIOS.py		Get values of BANK0 (GPIO0…27)
+	setGPIOS.py		Demonstration of setup_gpio, input_gpio, output_gpio
+# 	pwmTestS.py
+	getPADS.py		Return the current PAD settings
+	hwPWMtestS.py		Hardware PWM test program
+	DS3231S.py		Display status of DS3231 RTC
+
+pi_sock.py is provided to run on remote system

@@ -25,6 +25,7 @@ SRC	=	getInfoTest.c \
 		pwmTest.c  \
 		hwPWMtest.c \
 		hwPWMclock.c \
+		kPWMtest.c \
 		setGPIO.c \
 		getPAD.c \
 		bench-egpio.c  \

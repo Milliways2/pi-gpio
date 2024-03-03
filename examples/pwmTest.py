@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-# 2022-12-21
+# 2023-10-03
 
 import pi_gpio as GPIO
 import sys
@@ -23,20 +23,19 @@ GPIO.pwm_set_duty_cycle(LEDpin, 0.0)
 GPIO.pwm_set_frequency(LEDpin, 100.0)
 GPIO.pwm_start(LEDpin);
 
+if (GPIO.pwm_exists(LEDpin)):
+    print(f"pwm enabled on {LEDpin:d}");
+
 for g in range(0, 100, 10):
     sleep(1)
     GPIO.pwm_set_duty_cycle(LEDpin, float(g))
-for g in range(100, 0, -10):
+for g in range(100, -1, -10):
     sleep(1)
     GPIO.pwm_set_duty_cycle(LEDpin, float(g))
 
 
-#   if (pwm_exists(LEDpin))
-#     printf("pwm enabled on %i\n", LEDpin);
-
 GPIO.pwm_stop(LEDpin)
-# sleep(1)
-# print("cleanup()")
+
 sleep(3)
 GPIO.cleanup()
 sleep(1)

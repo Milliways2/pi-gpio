@@ -125,11 +125,11 @@ int map_gpio_mem(int mem_fd, uint32_t gpio_base) {
 int setup(void) {
   // Initialise pi-gpio
   // Must be called before any other function except get_rpi_info.
-  int mem_fd;
+  int mem_fd=0;
   int map_result;
   uint32_t peri_base = 0;
   uint32_t gpio_base;
-  char hardware[1024];
+  char hardware[1024]={0};
 
   if (piSetup)
     return SETUP_OK; // already initialised

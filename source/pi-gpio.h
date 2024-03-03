@@ -129,19 +129,34 @@ unsigned int pwmGetRange(int gpio);
 #define	PWM_MODE_BAL	1
 #endif /* PiHARD_PWM_H */
 
+
+// kpwm.h
+// Kernel PWM
+#ifndef PiKPWM_H
+#define PiKPWM_H
+int kpwm_export(int chan);
+int kpwm_unexport(unsigned chan);
+unsigned kpwm_get_period(unsigned chan);
+void kpwm_enable(unsigned chan, unsigned enable);
+void kpwm_start(unsigned chan, unsigned period, unsigned pulse_width);
+void kpwm_start_f(unsigned chan, float frequency, float duty_cycle);
+void kpwm_set_pulse_width(unsigned chan, unsigned pulse_width);
+void kpwm_set_duty_cycle(unsigned chan, float duty_cycle);
+#endif /* PiKPWM_H */
+
 // I2C
 #ifndef PiI2C_H
 #define PiI2C_H
 
-int i2cOpen(unsigned i2cBus, unsigned i2cAddr) ;
+int i2cOpen(unsigned i2cBus, unsigned i2cAddr);
 
-int i2cRead			(unsigned handle) ;
-int i2cRead8		(unsigned handle, unsigned i2cReg) ;
-int i2cRead16     (unsigned handle, unsigned i2cReg) ;
+int i2cRead(unsigned handle);
+int i2cRead8(unsigned handle, unsigned i2cReg);
+int i2cRead16(unsigned handle, unsigned i2cReg);
 
-int i2cWrite		(unsigned handle, int data) ;
-int i2cWrite8    (unsigned handle, unsigned i2cReg, int data) ;
-int i2cWrite16    (unsigned handle, unsigned i2cReg, int data) ;
+int i2cWrite(unsigned handle, int data);
+int i2cWrite8(unsigned handle, unsigned i2cReg, int data);
+int i2cWrite16(unsigned handle, unsigned i2cReg, int data);
 #endif /* PiI2C_H */
 
 // SPI

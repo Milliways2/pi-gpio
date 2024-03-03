@@ -1,11 +1,9 @@
 #! /usr/bin/env python3
-# 2022-12-18
+# 2023-10-05
 """
-SPI testing utility (using pi_gpio & spidev driver)
- * based on c code Copyright (c) 2007  MontaVista Software, Inc.
 """
 
-import pi_gpio as GPIO
+# import pi_gpio as GPIO
 import sys
 
 def printval(ax):
@@ -17,16 +15,16 @@ def printval(ax):
             print()
     print()
 
-controller = 0  #SPI0
-channel = 0     #.0
-mode = 0
-bits = 8
-speed = 1000000
-
-ret = GPIO.spiOpen( controller,  channel,  speed,  mode) #SPI controller, channel, speed, mode
-if (ret < 0) :
-    print("Unable to open /dev/spidev /dev/spidev{:d}.{:d}".format(controller, channel))
-    exit(-1)
+# controller = 0  #SPI0
+# channel = 0     #.0
+# mode = 0
+# bits = 8
+# speed = 1000000
+# 
+# ret = GPIO.spiOpen( controller,  channel,  speed,  mode) #SPI controller, channel, speed, mode
+# if (ret < 0) :
+#     print("Unable to open /dev/spidev /dev/spidev{:d}.{:d}".format(controller, channel))
+#     exit(-1)
 
 # Block of data that is defined in the tx[] array
 # tx = [0x37, 0xF0]
@@ -44,13 +42,13 @@ printval(tx)
 
 print()
 
-print("Device: \t/dev/spidev{:d}.{:d}".format(controller, channel))
-print("spi mode:\t{:d}".format(mode))
-print("bits per word:\t{:d}".format(bits))
-print("max speed:\t{:d} Hz ({:d}KHz)".format(speed, speed // 1000))
+# print("Device: \t/dev/spidev{:d}.{:d}".format(controller, channel))
+# print("spi mode:\t{:d}".format(mode))
+# print("bits per word:\t{:d}".format(bits))
+# print("max speed:\t{:d} Hz ({:d}KHz)".format(speed, speed // 1000))
 
 Btx = bytes(tx)
-Brx = bytes([0]*len(Btx))   # create empty bytes to receive data
-
-GPIO.spiDataRW2 ( channel, Btx, Brx, len(Btx))
-printval(Brx)
+# Brx = bytes([0]*len(Btx))   # create empty bytes to receive data
+# 
+# GPIO.spiDataRW2 ( channel, Btx, Brx, len(Btx))
+printval(Btx)

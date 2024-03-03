@@ -100,15 +100,15 @@ unsigned int pwmGetRange(int gpio);
 #ifndef PiI2C_H
 #define PiI2C_H
 
-int i2cOpen(unsigned i2cBus, unsigned i2cAddr) ;
+int i2cOpen(unsigned i2cBus, unsigned i2cAddr);
 
-int i2cRead	(unsigned handle) ;
-int i2cRead8	(unsigned handle, unsigned i2cReg) ;
-int i2cRead16	(unsigned handle, unsigned i2cReg) ;
+int i2cRead(unsigned handle);
+int i2cRead8(unsigned handle, unsigned i2cReg);
+int i2cRead16(unsigned handle, unsigned i2cReg);
 
-int i2cWrite	(unsigned handle, int data) ;
-int i2cWrite8	(unsigned handle, unsigned i2cReg, int data) ;
-int i2cWrite16	(unsigned handle, unsigned i2cReg, int data) ;
+int i2cWrite(unsigned handle, int data);
+int i2cWrite8(unsigned handle, unsigned i2cReg, int data);
+int i2cWrite16(unsigned handle, unsigned i2cReg, int data);
 #endif /* PiI2C_H */
 
 // SPI

@@ -154,6 +154,79 @@ unsigned int pwmGetRange(int gpio) {
   return(atoi(buffer));
 }
 
+
+// I2C
+int i2cOpen(unsigned i2cBus, unsigned i2cAddr) {
+	sprintf(message, "i2cOpen %d %d", i2cBus, i2cAddr);
+  send(obj_socket, message, strlen(message), 0);	// Send message
+  read(obj_socket, buffer, BLEN);
+  return(atoi(buffer));
+}
+int i2cRead(unsigned handle) {
+	sprintf(message, "i2cRead %d", handle);
+  send(obj_socket, message, strlen(message), 0);	// Send message
+  read(obj_socket, buffer, BLEN);
+  return(atoi(buffer));
+}
+int i2cRead8(unsigned handle, unsigned i2cReg) {
+	sprintf(message, "i2cRead8 %d %d", handle, i2cReg);
+  send(obj_socket, message, strlen(message), 0);	// Send message
+  read(obj_socket, buffer, BLEN);
+  return(atoi(buffer));
+}
+int i2cRead16(unsigned handle, unsigned i2cReg) {
+	sprintf(message, "i2cRead16 %d %d", handle, i2cReg);
+  send(obj_socket, message, strlen(message), 0);	// Send message
+  read(obj_socket, buffer, BLEN);
+  return(atoi(buffer));
+}
+int i2cWrite(unsigned handle, int data) {
+	sprintf(message, "i2cWrite %d %d", handle, data);
+  send(obj_socket, message, strlen(message), 0);	// Send message
+  read(obj_socket, buffer, BLEN);
+  return(atoi(buffer));
+}
+int i2cWrite8(unsigned handle, unsigned i2cReg, int data) {
+	sprintf(message, "i2cWrite8 %d %d %d", handle, i2cReg, data);
+  send(obj_socket, message, strlen(message), 0);	// Send message
+  read(obj_socket, buffer, BLEN);
+  return(atoi(buffer));
+}
+int i2cWrite16(unsigned handle, unsigned i2cReg, int data) {
+	sprintf(message, "i2cWrite16 %d %d %d", handle, i2cReg, data);
+  send(obj_socket, message, strlen(message), 0);	// Send message
+  read(obj_socket, buffer, BLEN);
+  return(atoi(buffer));
+}
+
+// Software PWM
+void pwm_set_duty_cycle(unsigned int gpio, float dutycycle) {
+	sprintf(message, "pwm_set_duty_cycle %d %f", gpio, dutycycle);
+  send(obj_socket, message, strlen(message), 0);	// Send message
+  read(obj_socket, buffer, BLEN);
+}
+void pwm_set_frequency(unsigned int gpio, float freq) {
+	sprintf(message, "pwm_set_frequency %d %f", gpio, freq);
+  send(obj_socket, message, strlen(message), 0);	// Send message
+  read(obj_socket, buffer, BLEN);
+}
+void pwm_start(unsigned int gpio) {
+	sprintf(message, "pwm_start %d", gpio);
+  send(obj_socket, message, strlen(message), 0);	// Send message
+  read(obj_socket, buffer, BLEN);
+}
+void pwm_stop(unsigned int gpio) {
+	sprintf(message, "pwm_stop %d", gpio);
+  send(obj_socket, message, strlen(message), 0);	// Send message
+  read(obj_socket, buffer, BLEN);
+}
+int pwm_exists(unsigned int gpio) {
+	sprintf(message, "pwm_exists %d", gpio);
+  send(obj_socket, message, strlen(message), 0);	// Send message
+  read(obj_socket, buffer, BLEN);
+  return(atoi(buffer));
+}
+
 // **********************
 int socket_connect(char* host) {
   // Connect to pi-gpio socket interface
