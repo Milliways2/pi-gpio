@@ -19,22 +19,10 @@ LDLIBS    = -lpi-gpio -lpthread -lm -lcrypt -lrt
 
 ###############################################################################
 
-SRC	=	getInfoTest.c \
-		bench-pi-gpio.c  \
-		getGPIO.c  \
-		pwmTest.c  \
-		hwPWMtest.c \
-		hwPWMclock.c \
-		kPWMtest.c \
-		setGPIO.c \
-		getPAD.c \
-		bench-egpio.c  \
-		DS3231.c \
-		get28.c \
-		set28.c \
-		egpio.c \
+SRC	=	spidev_test.c \
 		awrite.c \
-		aread.c
+		aread.c \
+		ADXL345.c
 
 OBJ	=	$(SRC:.c=.o)
 

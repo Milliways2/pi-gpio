@@ -37,7 +37,7 @@ int main() {
   printf("GPIO %2i Value=%i\n", TEST_GPIO_B, input_gpio(TEST_GPIO_B));
 
   output_28(bits, mask);
-  printf("GPIO %08x\n", input_28());
+  printf("GPIO %04x\n", input_28());
   printf("GPIO %2i Value=%i\n", TEST_GPIO_A, input_gpio(TEST_GPIO_A));
   printf("GPIO %2i Value=%i\n", TEST_GPIO_B, input_gpio(TEST_GPIO_B));
 

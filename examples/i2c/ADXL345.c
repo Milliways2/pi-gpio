@@ -1,14 +1,16 @@
 /** Sample I2C ADXL345 Code that outputs the x,y and z accelerometer values
  *   on a single line for sixty seconds.
  * Original by Derek Molloy for the book "Exploring Raspberry Pi"
- * Adapted for pi-gpio */
+ * Adapted for pi-i2c */
 // 2022-09-09
+// 2025-05-09	Convert to g values
 
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <pi-gpio.h>
+#include <math.h>
+#include <pi-i2c.h>
 
 const int i2cBus = 1;
 const int i2cAddr = 0x53;
@@ -39,9 +41,8 @@ int writeRegister(int file, unsigned char address, char value) {
 }
 
 // Read the entire 40 registers into the buffer (10 reserved)
-int readRegisters(int file) {
-  // Writing a 0x00 to the device sets the address back to 0 for the coming
-  // block read
+int readRegistersAll(int file) {
+  // Writing a 0x00 to the device sets the address back to 0 for the coming block read
   writeRegister(file, 0x00, 0x00);
   if (read(file, dataBuffer, BUFFER_SIZE) != BUFFER_SIZE) {
     printf("Failed to read in the full buffer\n");
@@ -55,9 +56,12 @@ int readRegisters(int file) {
 }
 
 short combineValues(unsigned char msb, unsigned char lsb) {
-  // shift the msb right by 8 bits and OR with lsb
+//   shift the msb right by 8 bits and OR with lsb
   return ((short)msb << 8) | (short)lsb;
 }
+
+float a[3];
+const float ACC_CONV = 1/(powf(2, 10) / 4);    // acceleration conversion factor (10-bit resolution ±2g) 
 
 int main() {
   int file;
@@ -74,7 +78,7 @@ int main() {
   // Setting mode to 00000000=0x00 for +/-2g 10-bit
   // Setting mode to 00001011=0x0B for +/-16g 13-bit
   writeRegister(file, DATA_FORMAT, 0x00);
-  readRegisters(file);
+  readRegistersAll(file);
 
   printf("The Device ID is: %02x\n", dataBuffer[DEVID]);
   printf("The POWER_CTL mode is: %02x\n", dataBuffer[POWER_CTL]);
@@ -86,14 +90,20 @@ int main() {
     short x = combineValues(dataBuffer[DATAX1], dataBuffer[DATAX0]);
     short y = combineValues(dataBuffer[DATAY1], dataBuffer[DATAY0]);
     short z = combineValues(dataBuffer[DATAZ1], dataBuffer[DATAZ0]);
+		a[0] = ACC_CONV * x;
+		a[1] = ACC_CONV * y;
+		a[2] = ACC_CONV * z;
     // Use \r and flush to write the output on the same line
-    printf(" X= %d Y= %d Z= %d \r", x, y, z);
+//     printf(" X= %d Y= %d Z= %d \r", x, y, z);
+		printf("X=%0.2fg Y=%0.2fg Z=%0.2fg\r", a[0], a[1], a[2]);
+
     fflush(stdout);
 
     usleep(1000000);
-    readRegisters(file); // read the sensor again
+    readRegistersAll(file); // read the sensor again
     count++;
   }
+  printf("\n");
   close(file);
   return 0;
 }

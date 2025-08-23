@@ -21,11 +21,14 @@
  *    If not, see <http://www.gnu.org/licenses/>.
  ***********************************************************************
  */
+ //2025-06-12
 
 #ifdef __cplusplus
  "C" {
 #endif
 
+#ifndef PiI2C_H
+#define PiI2C_H
 int i2cOpen(unsigned i2cBus, unsigned i2cAddr) ;
 int SMBusOpen(unsigned i2cBus, unsigned i2cAddr);
 
@@ -36,6 +39,7 @@ int i2cRead16     (unsigned handle, unsigned i2cReg) ;
 int i2cWrite		(unsigned handle, int data) ;
 int i2cWrite8    (unsigned handle, unsigned i2cReg, int data) ;
 int i2cWrite16    (unsigned handle, unsigned i2cReg, int data) ;
+#endif /* PiI2C_H */
 
 #ifdef __cplusplus
 }

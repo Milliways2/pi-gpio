@@ -19,6 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+//2025-06-13
 
 // Function prototypes
 //	c++ wrappers
@@ -129,7 +130,6 @@ unsigned int pwmGetRange(int gpio);
 #define	PWM_MODE_BAL	1
 #endif /* PiHARD_PWM_H */
 
-
 // kpwm.h
 // Kernel PWM
 #ifndef PiKPWM_H
@@ -147,16 +147,16 @@ void kpwm_set_duty_cycle(unsigned chan, float duty_cycle);
 // I2C
 #ifndef PiI2C_H
 #define PiI2C_H
-
 int i2cOpen(unsigned i2cBus, unsigned i2cAddr);
+int SMBusOpen(unsigned i2cBus, unsigned i2cAddr);
 
-int i2cRead(unsigned handle);
-int i2cRead8(unsigned handle, unsigned i2cReg);
-int i2cRead16(unsigned handle, unsigned i2cReg);
+int i2cRead		(unsigned handle);
+int i2cRead8	(unsigned handle, unsigned i2cReg);
+int i2cRead16	(unsigned handle, unsigned i2cReg);
 
-int i2cWrite(unsigned handle, int data);
-int i2cWrite8(unsigned handle, unsigned i2cReg, int data);
-int i2cWrite16(unsigned handle, unsigned i2cReg, int data);
+int i2cWrite	(unsigned handle, int data);
+int i2cWrite8	(unsigned handle, unsigned i2cReg, int data);
+int i2cWrite16	(unsigned handle, unsigned i2cReg, int data);
 #endif /* PiI2C_H */
 
 // SPI
@@ -173,7 +173,6 @@ int spiDataRW (int channel, unsigned char *data, int len);
 int getPAD(unsigned group);
 void setPAD(unsigned group, unsigned padstate);
 #endif /* PiPAD_H */
-
 
 #ifdef __cplusplus
 }

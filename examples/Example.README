@@ -49,3 +49,4 @@ I²C - require configuration and extra hardware
 
 SPI - require configuration and extra hardware
 	spidev_test.py
+	ADXL345.c

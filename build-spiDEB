@@ -1,23 +1,13 @@
 #!/bin/bash
-# script to create pi-gpio deb
-
-# 2022-08-04 use install, include HEADERS
-# 2022-08-10 update HEADERS MANPAGES
-# 2022-09-10 select dist directory
-# 2022-12-02 Install python overlay
-# 2022-12-12 REVISION
-# 2022-12-23 /usr/lib/python3/dist-packages/
-# 2022-12-24 gpioStatus
-# 2023-09-11 pi-gpiod
-# 2023-09-13 pi_sock.py
-# 2023-09-14 pi_sock.lib
-# 2024-02-28 added kpwm
-# 2025-05-15 added pi_i2c.py pi_spi.py
+# script to create pi-spi deb
+# 2025-06-14
 
 # Directory containing code source
 # Edit if not default
-LIBNAME='pi-gpio'
-CODEDIR="$HOME/$LIBNAME"
+LIBNAME='pi-spi'
+PROJDIR='pi-gpio'	# project directory
+# CODEDIR="$HOME/$LIBNAME"
+CODEDIR="$HOME/$PROJDIR"
 SOURCE="$CODEDIR/source"
 
 # Select destination directory for deb
@@ -32,8 +22,7 @@ ARCH=$(dpkg --print-architecture)
 
 REVISION="$1"
 if [ "${REVISION}" = "" ]; then
-	echo "default REVISION of 1 used"
-	REVISION="1"
+REVISION="1"
 fi
 
 VERS=$(cat $CODEDIR/VERSION)
@@ -66,28 +55,17 @@ mkdir -p $DEB_DIR/usr/bin
 echo "Copy libraries"
 cp $SOURCE/$DYNAMIC $DEB_DIR/usr/lib/
 
-cp $SOURCE/libpi-sock.so.$VERS $DEB_DIR/usr/lib/
 ln -sfr $DEB_DIR/usr/lib/$DYNAMIC $DEB_DIR/usr/lib/lib${LIBNAME}.so
-ln -sfr $DEB_DIR/usr/lib/libpi-sock.so.$VERS $DEB_DIR/usr/lib/libpi-sock.so
 
 # list of headers to include
-HEADERS="$LIBNAME.h pi-vers.h pi-spi.h pi-i2c.h pi-sock.h MCP23017.h"
+HEADERS="$LIBNAME.h"
 # list of man pages to include
-MANPAGES="$LIBNAME.3 MCP23017.3"
+MANPAGES="$LIBNAME.3"
 
 cd $SOURCE
 install -m 0644 $HEADERS	$DEB_DIR/usr/include/
 install -m 0644 $MANPAGES	$DEB_DIR/usr/share/man/man3/
-
-# install python overlays
-install -m 0644 -p pi_gpio.py	$DEB_DIR/usr/lib/python3/dist-packages/
-install -m 0644 -p kpwm.py	$DEB_DIR/usr/lib/python3/dist-packages/
-install -m 0644 -p pi_sock.py	$DEB_DIR/usr/lib/python3/dist-packages/
-install -m 0644 -p pi_i2c.py	$DEB_DIR/usr/lib/python3/dist-packages/
 install -m 0644 -p pi_spi.py	$DEB_DIR/usr/lib/python3/dist-packages/
-
-sudo install -o root -m 0755 -p gpioStatus	$DEB_DIR/usr/bin/
-sudo install -o root -m 0755 -p pi-gpiod	$DEB_DIR/usr/bin/
 
 # Create DEBIAN control file
 cat << EOF > $DEB_DIR/DEBIAN/control
@@ -98,7 +76,7 @@ Priority: optional
 Architecture: $ARCH
 Depends: libc6
 Maintainer: Ian Binnie <milliways@binnie.id.au>
-Description: A dynamic C library to control Raspberry Pi GPIO channels
+Description: A dynamic C library to control Raspberry Pi spi channels
 	includes python overlay
 EOF
 

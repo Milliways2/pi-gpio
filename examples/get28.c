@@ -15,7 +15,7 @@ int main() {
 
 
   n = input_28();
-  printf("GPIO %08x\n", n);
+  printf("GPIO %04x\n", n);
 
   cleanup();
   return 0;

@@ -57,7 +57,9 @@ all:	$(DYNAMIC) pi-gpiod libpi-sock.so
 
 # Make pi-gpiod Socket Server code.
 pi-gpiod: pi-gpiod.c process_data.c
+	@ echo "[Make pi-gpiod Socket Server code]"
 	$(CC) pi-gpiod.c process_data.c -o $@ -lpi-gpio -lpthread -lm -lcrypt -lrt
+# 	$(CC) pi-gpiod.c process_data.c -o $@ -lpthread -lm -lcrypt -lrt
 
 pi-vers.h:	../VERSION
 	echo "#define VERSION \"`cat ../VERSION`\"" > pi-vers.h
@@ -99,10 +101,11 @@ install:	$(DYNAMIC)
 	@ echo "[Install python overlays]"
 	mkdir -p $(DESTDIR)/usr/lib/python3/dist-packages/
 	install -m 0644 pi_gpio.py 	$(PYLIB)/pi_gpio.py
+	install -m 0644 pi_spi.py 	$(PYLIB)/pi_spi.py
+	install -m 0644 pi_i2c.py 	$(PYLIB)/pi_i2c.py
 	install -m 0644 pi_sock.py 	$(PYLIB)/pi_sock.py
 
 	@ echo "[Install gpioStatus]"
-# 	install -o root -m 0755 -p gpioStatus	/usr/bin/gpioStatus
 	install -o root -m 0755 -p gpioStatus	$(DESTDIR)$(PREFIX)/bin/gpioStatus
 
 .PHONY:	uninstall

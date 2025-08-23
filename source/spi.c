@@ -65,53 +65,51 @@ int spiOpen(unsigned controller, unsigned channel, unsigned speed, unsigned mode
 		sudo dtoverlay spi1-1cs
 	*/
 
-	int fd ;
-	char spiDev [32] ;
+	int fd;
+	char spiDev [32];
 
-	mode    &= 3 ;	// Mode is 0, 1, 2 or 3
+	mode    &= 3;	// Mode is 0, 1, 2 or 3
 
-	snprintf (spiDev, 31, "/dev/spidev%d.%d", controller, channel) ;
+	snprintf (spiDev, 31, "/dev/spidev%d.%d", controller, channel);
 
 	if ((fd = open (spiDev, O_RDWR)) < 0)
 	{
 		return SPI_OPEN_FAIL;
 	}
 
-	spiSpeeds [channel] = speed ;
-	spiFds    [channel] = fd ;
+	spiSpeeds [channel] = speed;
+	spiFds    [channel] = fd;
 
 	// Set SPI parameters.
 	if (ioctl (fd, SPI_IOC_WR_MODE, &mode)            < 0)
 	{
-		printf("SPI_IOC_WR_MODE: %d\n", fd) ;
+		printf("SPI_IOC_WR_MODE: %d\n", fd);
 		return SPI_MODE_FAIL;}
 	if (ioctl (fd, SPI_IOC_WR_BITS_PER_WORD, &spiBPW) < 0)
 	{
-		printf("SPI_BPW_FAIL: %d\n", fd) ;
+		printf("SPI_BPW_FAIL: %d\n", fd);
 		return SPI_BPW_FAIL;}
 	if (ioctl (fd, SPI_IOC_WR_MAX_SPEED_HZ, &speed)   < 0)
 	{
-		printf("SPI_IOC_WR_MAX_SPEED_HZ: %d\n", fd) ;
+		printf("SPI_IOC_WR_MAX_SPEED_HZ: %d\n", fd);
 		return SPI_SPEED_FAIL;}
-	return fd ;
+	return fd;
 }
 
-// int spiDataRW2(int channel, unsigned char *tx_data, unsigned char *rx_data, int len, unsigned bits)
 int spiDataRW2(int channel, unsigned char *tx_data, unsigned char *rx_data, int len)
 {
-	struct spi_ioc_transfer spi ;
+	struct spi_ioc_transfer spi;
 
-	memset (&spi, 0, sizeof (spi)) ;	// Mentioned in spidev.h but not used in the original kernel documentation test program )-:
+	memset (&spi, 0, sizeof (spi));
 
-	spi.tx_buf        = (unsigned long)tx_data ;
-	spi.rx_buf        = (unsigned long)rx_data ;
-	spi.len           = len ;
-	spi.delay_usecs   = spiDelay ;
-	spi.speed_hz      = spiSpeeds [channel] ;
-	spi.bits_per_word = spiBPW ;
-// 	spi.bits_per_word = bits ;
+	spi.tx_buf        = (unsigned long)tx_data;
+	spi.rx_buf        = (unsigned long)rx_data;
+	spi.len           = len;
+	spi.delay_usecs   = spiDelay;
+	spi.speed_hz      = spiSpeeds [channel];
+	spi.bits_per_word = spiBPW;
 
-	return ioctl (spiFds [channel], SPI_IOC_MESSAGE(1), &spi) ;
+	return ioctl (spiFds [channel], SPI_IOC_MESSAGE(1), &spi);
 }
 
 /*
@@ -122,6 +120,6 @@ int spiDataRW2(int channel, unsigned char *tx_data, unsigned char *rx_data, int 
 
 int spiDataRW(int channel, unsigned char *data, int len)
 {
-	return spiDataRW2(channel, data, data, len) ;
+	return spiDataRW2(channel, data, data, len);
 }
 

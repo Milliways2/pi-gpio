@@ -3,6 +3,7 @@
 # 2023-07-31
 # 2023-09-07
 # 2023-10-03
+# 2025-03-21
 """
 pi_gpio is a Python module for the RaspberryPi
 which uses the pi-gpio library to control the GPIO
@@ -94,7 +95,7 @@ OVERVIEW
     spiDataRW - Write and Read a block of data over the SPI bus
 """
 
-VERSION='0.6'
+VERSION='1.0'
 
 import ctypes
 __plibrary = ctypes.CDLL('libpi-gpio.so')
@@ -316,7 +317,7 @@ def i2cRead(handle):
   """
   return __plibrary.i2cRead(handle)
 
-def i2cRead8( handle,  i2cReg) :
+def i2cRead8(handle,  i2cReg) :
   """
   Read a single word (8 bits) from register
   handle: - handle to the I²C device
@@ -324,9 +325,9 @@ def i2cRead8( handle,  i2cReg) :
 
   Returns word read
   """
-  return __plibrary.i2cRead8( handle,  i2cReg)
+  return __plibrary.i2cRead8(handle,  i2cReg)
 
-def i2cRead16( handle,  i2cReg):
+def i2cRead16(handle,  i2cReg):
   """
   Read a single word (16 bits) from register
   handle: - handle to the I²C device
@@ -334,9 +335,9 @@ def i2cRead16( handle,  i2cReg):
 
   Returns Word read
   """
-  return __plibrary.i2cRead16( handle,  i2cReg)
+  return __plibrary.i2cRead16(handle,  i2cReg)
 
-def i2cWrite( handle,  data):
+def i2cWrite(handle,  data):
   """
   Write a single word (8 bits) to a device, without specifying a register
   handle: - handle to the I²C device
@@ -344,9 +345,9 @@ def i2cWrite( handle,  data):
 
   Returns result code
   """
-  return __plibrary.i2cWrite( handle,  data)
+  return __plibrary.i2cWrite(handle,  data)
 
-def i2cWrite8( handle,  i2cReg,  value):
+def i2cWrite8(handle,  i2cReg,  value):
   """
   Write a single word (8 bits) to the specified register
   handle: - handle to the I²C device
@@ -355,9 +356,9 @@ def i2cWrite8( handle,  i2cReg,  value):
 
   Returns result code
   """
-  return __plibrary.i2cWrite8( handle,  i2cReg,  value)
+  return __plibrary.i2cWrite8(handle,  i2cReg,  value)
 
-def i2cWrite16( handle,  reg,  value):
+def i2cWrite16(handle,  reg,  value):
   """
   Write a single word (16 bits) to the specified register
   handle: - handle to the I²C device
@@ -366,11 +367,11 @@ def i2cWrite16( handle,  reg,  value):
 
   Returns result code
   """
-  return __plibrary.i2cWrite16( handle,  reg,  value)
+  return __plibrary.i2cWrite16(handle,  reg,  value)
 
 #   SPI
 
-def spiOpen( controller,  channel,  speed,  mode):
+def spiOpen(controller,  channel,  speed,  mode):
   """
   Initialise a SPI channel
       Raspberry Pi Zero, 1, 2 and 3 have three SPI controllers
@@ -393,11 +394,11 @@ def spiOpen( controller,  channel,  speed,  mode):
 
   Returns file-descriptor for the device, or -n on error
   """
-  return __plibrary.spiOpen( controller,  channel,  speed,  mode)
+  return __plibrary.spiOpen(controller,  channel,  speed,  mode)
 
-def spiDataRW2( channel, tx_data, rx_data, len):
+def spiDataRW2(channel, tx_data, rx_data, len):
   """
-  spiDataRW2( channel, tx_data, rx_data, len)
+  spiDataRW2(channel, tx_data, rx_data, len)
   Write and Read a block of data over the SPI bus
       Discrete Tx/Rx buffers
   channel: - 0-3 (depending on available chip selects)
@@ -407,9 +408,9 @@ def spiDataRW2( channel, tx_data, rx_data, len):
 
   Returns result code
   """
-  return __plibrary.spiDataRW2( channel, tx_data, rx_data, len)
+  return __plibrary.spiDataRW2(channel, ctypes.c_char_p(tx_data), ctypes.c_char_p(rx_data), len)
 
-def spiDataRW ( channel, data, len):
+def spiDataRW (channel, data, len):
   """
   Write and Read a block of data over the SPI bus
       Shared Tx/Rx buffer
@@ -419,7 +420,7 @@ def spiDataRW ( channel, data, len):
 
   Returns result code
   """
-  return __plibrary.spiDataRW ( channel, data, len)
+  return __plibrary.spiDataRW(channel, ctypes.c_char_p(bytes(data)), len)
 
 #   Software PWM
 
