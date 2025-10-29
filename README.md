@@ -1,7 +1,7 @@
 # pi-gpio
 A fast dynamic C library to control Raspberry Pi GPIO channels  
 Supports all production models available in September 2023 / all SOC  
-**NOTE does not run on Pi5/BCM2712**
+**NOTE does not run on Pi5/BCM2712**  
 Runs on all *Raspberry Pi OS* including Trixie 
 
 This library has code to:-
