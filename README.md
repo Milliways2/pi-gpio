@@ -2,6 +2,7 @@
 A fast dynamic C library to control Raspberry Pi GPIO channels  
 Supports all production models available in September 2023 / all SOC  
 **NOTE does not run on Pi5/BCM2712**
+Runs on all *Raspberry Pi OS* including Trixie 
 
 This library has code to:-
 
@@ -69,3 +70,9 @@ If error message "Pi Setup failure" the most likely cause is that user does not 
 If run with root permission uses character device /dev/mem which allows full access but requires determining the address of the GPIO peripheral which varies depending on SoC.
 
 The socket interface allows access without root permission.
+
+Note
+====
+This is the final version including multiple GPIO functionality as access to the SoC registers is restricted.  
+Future code will be in separate libraries -  
+`i2c` & `spi` examples now use stand alone libraries (which are included in the package).
